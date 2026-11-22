@@ -1,0 +1,52 @@
+name: Netzdaten aktualisieren
+
+# Holt einmal täglich die Daten für den Reiter „Netze“ (JAO, netztransparenz.de, OpenStreetMap)
+# und speichert sie im Ordner netze/. Läuft auf GitHub-Servern, kostet nichts.
+on:
+  schedule:
+    - cron: "37 7 * * *"   # täglich ca. 8:37 Uhr deutscher Winterzeit
+  workflow_dispatch:
+    inputs:
+      grid:
+        description: "Netzkarte aus OpenStreetMap neu laden"
+        type: boolean
+        default: false
+  push:
+    branches: [main]
+    paths:
+      - "scripts/update_netze.py"
+      - ".github/workflows/netze.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: netze
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq osmium-tool && pip install requests
+      - name: Daten laden
+        run: python scripts/update_netze.py ${{ github.event.inputs.grid == 'true' && '--grid' || '' }}
+      - name: Speichern
+        run: |
+          git config user.name "netzdaten-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add netze
+          if git diff --cached --quiet; then
+            echo "Keine Änderungen"
+          else
+            git commit -m "Netzdaten aktualisiert"
+            for i in 1 2 3; do
+              git pull --rebase origin main && git push && break
+              sleep 10
+            done
+          fi
