@@ -1,58 +1,5 @@
-Lauf gestartet 2026-11-22T10:57:36.852272+00:00
-Netzgeometrie aus OpenStreetMap (Geofabrik) laden …
-   $ curl -4 -fsSL --retry 4 --retry-delay 15 -A Energie-Dashboard (github.com/hector-panzer/Energy-Germany-Dashbord) -o /home/runner/work/_temp/germany.osm.pbf https://download.geofabrik.de/europe/germany-latest.osm.pbf
-   geladen https://download.geofabrik.de/europe/germany-latest.osm.pbf: 4.89 GB
-   $ osmium tags-filter -O -o /home/runner/work/_temp/germany-power.osm.pbf /home/runner/work/_temp/germany.osm.pbf w/power=line,cable nwr/power=substation,plant
-   $ osmium export -O -f geojsonseq --add-unique-id=type_id -o /home/runner/work/_temp/germany-power.geojsonseq /home/runner/work/_temp/germany-power.osm.pbf
-  germany: +9177 Leitungen ≥220 kV, +26049 Leitungen 110 kV, +8385 Orte
-   $ curl -4 -fsSL --retry 4 --retry-delay 15 -A Energie-Dashboard (github.com/hector-panzer/Energy-Germany-Dashbord) -o /home/runner/work/_temp/netherlands.osm.pbf https://download.geofabrik.de/europe/netherlands-latest.osm.pbf
-   geladen https://download.geofabrik.de/europe/netherlands-latest.osm.pbf: 1.41 GB
-   $ osmium tags-filter -O -o /home/runner/work/_temp/netherlands-power.osm.pbf /home/runner/work/_temp/netherlands.osm.pbf w/power=line,cable nwr/power=substation,plant
-   $ osmium export -O -f geojsonseq --add-unique-id=type_id -o /home/runner/work/_temp/netherlands-power.geojsonseq /home/runner/work/_temp/netherlands-power.osm.pbf
-  netherlands: +919 Leitungen ≥220 kV, +0 Leitungen 110 kV, +1058 Orte
-   $ curl -4 -fsSL --retry 4 --retry-delay 15 -A Energie-Dashboard (github.com/hector-panzer/Energy-Germany-Dashbord) -o /home/runner/work/_temp/belgium.osm.pbf https://download.geofabrik.de/europe/belgium-latest.osm.pbf
-   geladen https://download.geofabrik.de/europe/belgium-latest.osm.pbf: 0.70 GB
-   $ osmium tags-filter -O -o /home/runner/work/_temp/belgium-power.osm.pbf /home/runner/work/_temp/belgium.osm.pbf w/power=line,cable nwr/power=substation,plant
-   $ osmium export -O -f geojsonseq --add-unique-id=type_id -o /home/runner/work/_temp/belgium-power.geojsonseq /home/runner/work/_temp/belgium-power.osm.pbf
-  belgium: +589 Leitungen ≥220 kV, +0 Leitungen 110 kV, +150 Orte
-   $ curl -4 -fsSL --retry 4 --retry-delay 15 -A Energie-Dashboard (github.com/hector-panzer/Energy-Germany-Dashbord) -o /home/runner/work/_temp/luxembourg.osm.pbf https://download.geofabrik.de/europe/luxembourg-latest.osm.pbf
-   geladen https://download.geofabrik.de/europe/luxembourg-latest.osm.pbf: 0.05 GB
-   $ osmium tags-filter -O -o /home/runner/work/_temp/luxembourg-power.osm.pbf /home/runner/work/_temp/luxembourg.osm.pbf w/power=line,cable nwr/power=substation,plant
-   $ osmium export -O -f geojsonseq --add-unique-id=type_id -o /home/runner/work/_temp/luxembourg-power.geojsonseq /home/runner/work/_temp/luxembourg-power.osm.pbf
-  luxembourg: +111 Leitungen ≥220 kV, +0 Leitungen 110 kV, +26 Orte
-   $ curl -4 -fsSL --retry 4 --retry-delay 15 -A Energie-Dashboard (github.com/hector-panzer/Energy-Germany-Dashbord) -o /home/runner/work/_temp/france.osm.pbf https://download.geofabrik.de/europe/france-latest.osm.pbf
-   geladen https://download.geofabrik.de/europe/france-latest.osm.pbf: 5.12 GB
-   $ osmium tags-filter -O -o /home/runner/work/_temp/france-power.osm.pbf /home/runner/work/_temp/france.osm.pbf w/power=line,cable nwr/power=substation,plant
-   $ osmium export -O -f geojsonseq --add-unique-id=type_id -o /home/runner/work/_temp/france-power.geojsonseq /home/runner/work/_temp/france-power.osm.pbf
-  france: +7883 Leitungen ≥220 kV, +0 Leitungen 110 kV, +1458 Orte
-   $ curl -4 -fsSL --retry 4 --retry-delay 15 -A Energie-Dashboard (github.com/hector-panzer/Energy-Germany-Dashbord) -o /home/runner/work/_temp/switzerland.osm.pbf https://download.geofabrik.de/europe/switzerland-latest.osm.pbf
-   geladen https://download.geofabrik.de/europe/switzerland-latest.osm.pbf: 0.55 GB
-   $ osmium tags-filter -O -o /home/runner/work/_temp/switzerland-power.osm.pbf /home/runner/work/_temp/switzerland.osm.pbf w/power=line,cable nwr/power=substation,plant
-   $ osmium export -O -f geojsonseq --add-unique-id=type_id -o /home/runner/work/_temp/switzerland-power.geojsonseq /home/runner/work/_temp/switzerland-power.osm.pbf
-  switzerland: +1411 Leitungen ≥220 kV, +0 Leitungen 110 kV, +474 Orte
-   $ curl -4 -fsSL --retry 4 --retry-delay 15 -A Energie-Dashboard (github.com/hector-panzer/Energy-Germany-Dashbord) -o /home/runner/work/_temp/austria.osm.pbf https://download.geofabrik.de/europe/austria-latest.osm.pbf
-   geladen https://download.geofabrik.de/europe/austria-latest.osm.pbf: 0.82 GB
-   $ osmium tags-filter -O -o /home/runner/work/_temp/austria-power.osm.pbf /home/runner/work/_temp/austria.osm.pbf w/power=line,cable nwr/power=substation,plant
-   $ osmium export -O -f geojsonseq --add-unique-id=type_id -o /home/runner/work/_temp/austria-power.geojsonseq /home/runner/work/_temp/austria-power.osm.pbf
-  austria: +1067 Leitungen ≥220 kV, +0 Leitungen 110 kV, +884 Orte
-   $ curl -4 -fsSL --retry 4 --retry-delay 15 -A Energie-Dashboard (github.com/hector-panzer/Energy-Germany-Dashbord) -o /home/runner/work/_temp/czech-republic.osm.pbf https://download.geofabrik.de/europe/czech-republic-latest.osm.pbf
-   geladen https://download.geofabrik.de/europe/czech-republic-latest.osm.pbf: 0.95 GB
-   $ osmium tags-filter -O -o /home/runner/work/_temp/czech-republic-power.osm.pbf /home/runner/work/_temp/czech-republic.osm.pbf w/power=line,cable nwr/power=substation,plant
-   $ osmium export -O -f geojsonseq --add-unique-id=type_id -o /home/runner/work/_temp/czech-republic-power.geojsonseq /home/runner/work/_temp/czech-republic-power.osm.pbf
-  czech-republic: +576 Leitungen ≥220 kV, +0 Leitungen 110 kV, +581 Orte
-   $ curl -4 -fsSL --retry 4 --retry-delay 15 -A Energie-Dashboard (github.com/hector-panzer/Energy-Germany-Dashbord) -o /home/runner/work/_temp/poland.osm.pbf https://download.geofabrik.de/europe/poland-latest.osm.pbf
-   geladen https://download.geofabrik.de/europe/poland-latest.osm.pbf: 2.12 GB
-   $ osmium tags-filter -O -o /home/runner/work/_temp/poland-power.osm.pbf /home/runner/work/_temp/poland.osm.pbf w/power=line,cable nwr/power=substation,plant
-   $ osmium export -O -f geojsonseq --add-unique-id=type_id -o /home/runner/work/_temp/poland-power.geojsonseq /home/runner/work/_temp/poland-power.osm.pbf
-  poland: +1881 Leitungen ≥220 kV, +0 Leitungen 110 kV, +706 Orte
-   $ curl -4 -fsSL --retry 4 --retry-delay 15 -A Energie-Dashboard (github.com/hector-panzer/Energy-Germany-Dashbord) -o /home/runner/work/_temp/denmark.osm.pbf https://download.geofabrik.de/europe/denmark-latest.osm.pbf
-   geladen https://download.geofabrik.de/europe/denmark-latest.osm.pbf: 0.50 GB
-   $ osmium tags-filter -O -o /home/runner/work/_temp/denmark-power.osm.pbf /home/runner/work/_temp/denmark.osm.pbf w/power=line,cable nwr/power=substation,plant
-   $ osmium export -O -f geojsonseq --add-unique-id=type_id -o /home/runner/work/_temp/denmark-power.geojsonseq /home/runner/work/_temp/denmark-power.osm.pbf
-  denmark: +585 Leitungen ≥220 kV, +0 Leitungen 110 kV, +296 Orte
-  gespeichert grid_hs.json: 1.37 MB
-  gespeichert grid_110.json: 1.42 MB
-  gespeichert orte.json: 0.88 MB
+Lauf gestartet 2026-11-22T11:45:03.039755+00:00
+Netzgeometrie: aktuell (jünger als eine Woche), übersprungen
 Ortsindex: 14593 Namen
 JAO laden …
   JAO 2026-11-15: 386 Viertelstunden-Einträge, 25 bindende Engpässe, 15 mit Kartenposition
@@ -67,19 +14,19 @@ Redispatch laden …
   gespeichert netze.json: 0.23 MB
 
 == Redispatch: Zuordnung der Anlagen ==
-  50H BASF Schwarzheide  ->  BASF (49.5282, 8.4088)
-  50H Berlin Lichterfelde  ->  Unterwerk Berlin-Karow (52.6082, 13.4585)
-  50H Berlin Marzahn  ->  Unterwerk Berlin-Karow (52.6082, 13.4585)
-  50H Berlin Mitte  ->  Unterwerk Berlin-Karow (52.6082, 13.4585)
+  50H BASF Schwarzheide  ->  BASF Schwarzheide (51.48, 13.87)
+  50H Berlin Lichterfelde  ->  Heizkraftwerk Lichterfelde (52.4253, 13.3097)
+  50H Berlin Marzahn  ->  Umspannwerk Marzahn (52.5358, 13.524)
+  50H Berlin Mitte  ->  Heizkraftwerk Berlin-Mitte (52.51, 13.42)
   50H Chemnitz  ->  Heizkraftwerk Chemnitz-Nord (50.8562, 12.9211)
-  50H Dresden-Nossen  ->  Umspannwerk Dresden Süd (50.9893, 13.8423)
-  50H Dresden-Reick  ->  Batteriespeicher Dresden - Reick (51.0252, 13.7838)
-  50H Halle-Dieselstr HKW-BlockA  ->  PV-Halle N (49.046, 10.6098)
-  50H Halle-Dieselstr HKW-BlockB  ->  PV-Halle N (49.046, 10.6098)
+  50H Dresden-Nossen  ->  UW Nossen (51.0652, 13.3128)
+  50H Dresden-Reick  ->  Heizkraftwerk Reick (51.0247, 13.7841)
+  50H Halle-Dieselstr HKW-BlockA  ->  Heizkraftwerk Halle-Dieselstraße (51.47, 11.99)
+  50H Halle-Dieselstr HKW-BlockB  ->  Heizkraftwerk Halle-Dieselstraße (51.47, 11.99)
   50H Halle-Trotha HKW  ->  Heizkraftwerk Halle-Trotha (51.5237, 11.9433)
-  50H Hamburg Tiefstack 2 HKW SK  ->  Hamburg Nord (53.7409, 9.9854)
-  50H Hamburg Wedel1  ->  Hamburg Nord (53.7409, 9.9854)
-  50H InfraLeuna IKW  ->  — kein Ort —
+  50H Hamburg Tiefstack 2 HKW SK  ->  Kraftwerk Tiefstack (53.5271, 10.0663)
+  50H Hamburg Wedel1  ->  Heizkraftwerk Wedel (53.57, 9.72)
+  50H InfraLeuna IKW  ->  Kraftwerk Leuna (51.32, 12.02)
   50H Leipzig Nord GuD  ->  Umspannwerk Leipzig C (51.3673, 12.3902)
   50H Leipzig Süd GuD  ->  Umspannwerk Leipzig C (51.3673, 12.3902)
   50H OWP Arcadis Ost 1  ->  Arcadis Ost 1 (54.8129, 13.6668)
@@ -135,7 +82,7 @@ Redispatch laden …
   AMP_WESTNETZ_EMSLAND_CR_SONSTIGE_EE  ->  Netzgebiet Westnetz Emsland (52.7, 7.35)
   AMP_WESTNETZ_EMSLAND_CR_WIND  ->  Netzgebiet Westnetz Emsland (52.7, 7.35)
   AMP_WESTNETZ_NIKE_CR_SONSTIGE_EE  ->  — kein Ort —
-  AMP_WESTNETZ_NIKE_CR_WIND  ->  Wind-UW Fröhden (51.9749, 13.1801)
+  AMP_WESTNETZ_NIKE_CR_WIND  ->  — kein Ort —
   AMP_WESTNETZ_SAUERLAND_CR_WIND  ->  Netzgebiet Westnetz Sauerland (51.25, 8.2)
   AVA Cluster Helmstedt  ->  Umspannwerk Helmstedt (52.1999, 10.998)
   AVA Cluster Lehrte  ->  Umspannwerk Lehrte West (52.3812, 9.9508)
@@ -143,39 +90,39 @@ Redispatch laden …
   AVA Cluster Voslapp  ->  Voslapp (53.6057, 8.0861)
   BAG NWAK-Cluster 07a Irsching  ->  Umspannwerk Irsching (48.7641, 11.5833)
   Boxberg (Standort)  ->  Kraftwerk Boxberg (51.4197, 14.5649)
-  Braunschweig GT  ->  Unterwerk Braunschweig (52.2691, 10.6412)
-  Braunschweig HKWM DT42  ->  Unterwerk Braunschweig (52.2691, 10.6412)
-  Braunschweig HKWM GT31  ->  Unterwerk Braunschweig (52.2691, 10.6412)
+  Braunschweig GT  ->  Umspannwerk Braunschweig Nord (52.3016, 10.5051)
+  Braunschweig HKWM DT42  ->  Umspannwerk Braunschweig Nord (52.3016, 10.5051)
+  Braunschweig HKWM GT31  ->  Umspannwerk Braunschweig Nord (52.3016, 10.5051)
   Börse  ->  — kein Ort —
-  CHEMIEPARK_MARL_KRAFTWERKE  ->  Chemiepark Hüls (51.6962, 7.0922)
+  CHEMIEPARK_MARL_KRAFTWERKE  ->  Kraftwerk 3 Marl (51.6897, 7.0778)
   Datteln_4  ->  Kraftwerk Datteln IV (51.6315, 7.3404)
   Eltmann  ->  Heizkraftwerk Eltmann (49.9838, 10.6512)
   Emsland Block B  ->  Erdgaskraftwerk Emsland (52.4829, 7.3035)
   Emsland Block C  ->  Erdgaskraftwerk Emsland (52.4829, 7.3035)
   Emsland Block D  ->  Erdgaskraftwerk Emsland (52.4829, 7.3035)
-  Frankfurt West 4  ->  Heizkraftwerk Frankfurt (Oder) (52.3187, 14.5322)
+  Frankfurt West 4  ->  Heizkraftwerk Frankfurt West (50.1, 8.64)
   GUD_HERNE_6  ->  Heizkraftwerk Herne (51.5503, 7.1873)
-  Gebersdorf 1  ->  — kein Ort —
-  Gebersdorf GT  ->  — kein Ort —
+  Gebersdorf 1  ->  Heizkraftwerk Nürnberg-Gebersdorf (49.43, 11.01)
+  Gebersdorf GT  ->  Heizkraftwerk Nürnberg-Gebersdorf (49.43, 11.01)
   Goldisthal (Standort)  ->  Pumpspeicherwerk Goldisthal (50.51, 11.0)
   Grosskraftwerk Mannheim Block 6  ->  Großkraftwerk Mannheim (49.4437, 8.4974)
   Grosskraftwerk Mannheim Block 7  ->  Großkraftwerk Mannheim (49.4437, 8.4974)
-  HAMMUENTROP_10  ->  — kein Ort —
-  HAMMUENTROP_20  ->  — kein Ort —
+  HAMMUENTROP_10  ->  Kraftwerke Hamm-Uentrop (51.68, 7.97)
+  HAMMUENTROP_20  ->  Kraftwerke Hamm-Uentrop (51.68, 7.97)
   HERDECKE_H6  ->  Herdecke (51.4025, 7.411)
-  HKW Aalen  ->  Unterwerk Aalen (48.8224, 10.042)
+  HKW Aalen  ->  — kein Ort —
   HUCKINGEN_A  ->  Kraftwerk Huckingen (51.3756, 6.7233)
-  Hannover (GKH) 2  ->  Station Hannover (51.5032, 7.1701)
-  Hannover-Linden GuD  ->  Station Hannover (51.5032, 7.1701)
+  Hannover (GKH) 2  ->  Gemeinschaftskraftwerk Hannover (Stöcken) (52.41, 9.66)
+  Hannover-Linden GuD  ->  Heizkraftwerk Hannover-Linden (52.36, 9.71)
   Heizkraftwerk Altbach/Deizisau GT E  ->  Heizkraftwerk Altbach/Deizisau (48.7186, 9.372)
   Heizkraftwerk_Pforzheim  ->  Heizkraftwerk Pforzheim (48.8974, 8.7248)
-  INFRA_HOE_GTX1  ->  — kein Ort —
+  INFRA_HOE_GTX1  ->  Industriepark Höchst (50.09, 8.53)
   Irsching 4  ->  Umspannwerk Irsching (48.7641, 11.5833)
   Irsching 5  ->  Umspannwerk Irsching (48.7641, 11.5833)
   Jänschwalde (Standort)  ->  Kraftwerk Jänschwalde (51.8354, 14.4599)
-  KMW_KW5  ->  — kein Ort —
+  KMW_KW5  ->  Kraftwerke Mainz-Wiesbaden (50.02, 8.25)
   KNAPSACK_20  ->  Station Knapsack (50.8637, 6.8426)
-  Kiel (Küstenkraftwerk gesamt)  ->  Küstenkraftwerk Kiel (54.3412, 10.1792)
+  Kiel (Küstenkraftwerk gesamt)  ->  Küstenkraftwerk K.I.E.L. (54.3412, 10.1792)
   Knapsack 1  ->  Station Knapsack (50.8637, 6.8426)
   Kühtai 1 M1 (Uniper)  ->  Kühtai (Tirol) (47.21, 11.02)
   LAUSWARD_GUDF  ->  Kraftwerk Lausward (51.2222, 6.7318)
@@ -187,8 +134,8 @@ Redispatch laden …
   NIEDERAUSSEM_K  ->  Kraftwerk Niederaußem (50.9929, 6.6694)
   NIEHL-31-GUD  ->  Heizkraftwerk Köln-Niehl (50.975, 6.9871)
   NIEHL-II  ->  Heizkraftwerk Köln-Niehl (50.975, 6.9871)
-  Netzreservekraftwerk GTKW-DA-POOL  ->  — kein Ort —
-  OWP Borkum Riffgrund 3  ->  Solarpark Borkum (53.5799, 6.7096)
+  Netzreservekraftwerk GTKW-DA-POOL  ->  Gasturbinen Darmstadt (49.87, 8.65)
+  OWP Borkum Riffgrund 3  ->  Offshore-Windpark Borkum Riffgrund (54.0, 6.5)
   OWP Nordergründe  ->  Nordergründe (53.8357, 8.1672)
   ReserveKW Plattling  ->  Kraftwerk Plattling (48.8005, 12.8679)
   ReserveKW Staudinger 5  ->  Kraftwerk Staudinger (50.0881, 8.9479)
@@ -196,41 +143,35 @@ Redispatch laden …
   Reservekraftwerk Rheinhafen-Dampfkraftwerk Karlsruhe Block 4  ->  Rheinhafen-Dampfkraftwerk (49.013, 8.3065)
   Rheinhafen-Dampfkraftwerk Karlsruhe Block 8  ->  Rheinhafen-Dampfkraftwerk (49.013, 8.3065)
   Rostock Kohlekraftwerk  ->  Kraftwerk Rostock (54.1417, 12.1315)
-  SHN Cluster Baltic Cable  ->  Baltic Power (55.0468, 17.6636)
-  SHN Cluster Heide West T411 T412  ->  Umspannwerk Heide (49.0398, 8.3706)
+  SHN Cluster Baltic Cable  ->  Baltic Cable, Lübeck-Herrenwyk (53.9, 10.8)
+  SHN Cluster Heide West T411 T412  ->  Umspannwerk Heide (Holstein) (54.19, 9.08)
   STUMMHAFEN_10  ->  — kein Ort —
   SW München KW-Pool  ->  München Nord (48.181, 11.6393)
-  Schkopau  ->  Bahnstrom Schaltwerk Schkopau (51.4012, 11.9465)
+  Schkopau  ->  Kraftwerk Schkopau (51.4, 11.95)
   Schwarze Pumpe (Standort)  ->  Kraftwerk Schwarze Pumpe (51.5344, 14.356)
   Silz 1 (Uniper)  ->  Silz (Tirol) (47.27, 10.94)
   UPM Schongau HKW3  ->  Umspannwerk Schongau (47.8122, 10.8794)
   UW Büttel  ->  Umspannwerk Büttel (53.9161, 9.2347)
   UW Diele  ->  Diele (53.1258, 7.3107)
   UW Dörpen-West  ->  Dörpen (52.9806, 7.3652)
-  UW Emden-Ost  ->  Unterwerk Emden (53.3583, 7.22)
+  UW Emden-Ost  ->  Kraftwerk Emden (53.3412, 7.2059)
   UW Garrel-Ost alpha  ->  Garrel (52.9642, 8.0272)
-  WEISWEILERVGT_H3  ->  — kein Ort —
+  WEISWEILERVGT_H3  ->  Kraftwerk Weisweiler (50.84, 6.32)
   WEISWEILER_G  ->  Kraftwerk Weisweiler (50.8365, 6.321)
   WEISWEILER_H  ->  Kraftwerk Weisweiler (50.8365, 6.321)
-  WP Emsland  ->  Erdgaskraftwerk Emsland (52.4829, 7.3035)
+  WP Emsland  ->  Windparks im Emsland (52.75, 7.3)
   Waldeck 5  ->  Pumpspeicherwerk Waldeck (51.18, 9.07)
   Wilhelmshaven  ->  Umspannwerk Kraftwerk Wilhelmshaven (53.5635, 8.1477)
   Wolfsburg Süd GT 32  ->  Umspannwerk Wolfsburg (52.4352, 10.7581)
   Wolfsburg West GUD GT50  ->  Umspannwerk Wolfsburg (52.4352, 10.7581)
-  Würzburg GT 1  ->  Unterwerk Würzburg (49.8017, 9.898)
+  Würzburg GT 1  ->  — kein Ort —
   illwerke vkw AG  ->  Illwerke (Montafon, Vorarlberg) (47.07, 9.93)
 == Redispatch: ohne Ort (MWh im Zeitraum) ==
      10127  STUMMHAFEN_10
-      7803  HAMMUENTROP_20
-      2957  HAMMUENTROP_10
-      1138  Gebersdorf 1
-       959  KMW_KW5
-       280  50H InfraLeuna IKW
-       162  Gebersdorf GT
-        92  WEISWEILERVGT_H3
-        86  Netzreservekraftwerk GTKW-DA-POOL
+      3832  AMP_WESTNETZ_NIKE_CR_WIND
         85  AMP_WESTNETZ_NIKE_CR_SONSTIGE_EE
-        30  INFRA_HOE_GTX1
+        60  Würzburg GT 1
+        49  HKW Aalen
 == JAO: Engpässe ohne Kartenposition ==
   Isaccea - Vulcanesti   (gelesen als ['Isaccea', 'Vulcanesti'])
   Kainachtal - Maribor 473   (gelesen als ['Kainachtal', 'Maribor'])
@@ -267,4 +208,4 @@ Redispatch laden …
   Diele - Meeden SCHWARZ  ->  ['Diele', '380 kV Meeden']
   Maasbracht - Oberzier 380 white  ->  ['380 kV Maasbracht', 'Station Oberzier']
   External Constraint BE_AL_import  ->  []
-Fertig in 2560 s
+Fertig in 39 s
