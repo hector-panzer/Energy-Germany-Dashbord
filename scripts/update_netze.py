@@ -413,7 +413,7 @@ def update_jao(days, idx, prev):
             a = agg.get(key)
             if a is None:
                 a = agg[key] = {"tso": key[0], "name": key[1], "cont": key[2], "dir": key[3], "eic": d.get("cnecEic") or "",
-                                "n": 0, "sum": 0.0, "max": 0.0, "fmax": [], "ram": [], "fref": [], "frm": [], "imax": d.get("imax"),
+                                "n": 0, "sum": 0.0, "max": 0.0, "fmax": [], "ram": [], "fref": [], "frm": [], "f0core": [], "amr": [], "imax": d.get("imax"),
                                 "mrf": d.get("minRamFactor"), "hub": f'{d.get("hubFrom")}>{d.get("hubTo")}', "q": [0] * 100, "ptdf": d.get("maxZ2ZPtdf")}
             spv = float(d.get("shadowPrice") or 0)
             a["n"] += 1
@@ -421,7 +421,7 @@ def update_jao(days, idx, prev):
             if spv > a["max"]:
                 a["max"] = spv
                 a["hub"] = f'{d.get("hubFrom")}>{d.get("hubTo")}'
-            for k in ("fmax", "ram", "fref", "frm"):
+            for k in ("fmax", "ram", "fref", "frm", "f0core", "amr"):
                 if d.get(k) is not None:
                     a[k].append(float(d[k]))
             t = datetime.fromisoformat(d["dateTimeUtc"].replace("Z", "+00:00")).astimezone(TZ)
@@ -452,6 +452,7 @@ def update_jao(days, idx, prev):
             rows.append({"tso": a["tso"], "name": a["name"], "cont": a["cont"], "kind": kind, "de": de,
                          "qh": a["n"], "sum": round(a["sum"], 1), "max": round(a["max"], 1),
                          "fmax": avg(a["fmax"]), "ram": avg(a["ram"]), "fref": avg(a["fref"]), "frm": avg(a["frm"]),
+                         "f0": avg(a["f0core"]), "amr": avg(a["amr"]),
                          "imax": a["imax"], "mrf": a["mrf"], "hub": a["hub"], "geo": geo, "q": a["q"][:96]})
         # Grenzen: maximale Austauschkapazität (MaxBex) und geplanter Austausch
         borders = {}

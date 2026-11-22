@@ -25,9 +25,11 @@ const INFO = {
   bindend: `<b>Bindend</b><p>Ein Engpass ist bindend, wenn er in einer Viertelstunde den Handel begrenzt hat: Ohne ihn hätten die Länder mehr Strom ausgetauscht. Dann ist sein Schattenpreis größer als null.</p><p>Gezählt wird in Viertelstunden, weil der Day-Ahead-Markt seit 2025 in 15-Minuten-Schritten rechnet. 96 Viertelstunden sind ein ganzer Tag.</p>`,
   schatten: `<b>Schattenpreis</b><p>Der Wert, den 1 MW mehr Kapazität auf diesem Netzelement für den europäischen Markt in dieser Viertelstunde gehabt hätte, in €/MW. Mathematisch ist es der Lagrange-Multiplikator der Nebenbedingung „Fluss ≤ RAM“.</p><p>0 heißt: kein Problem. Ein hoher Wert heißt: Genau hier hat das Netz den Markt am stärksten ausgebremst. Die <b>Summe</b> über alle Viertelstunden zeigt, wie teuer der Engpass am ganzen Tag war.</p>`,
   fmax: `<b>Fmax</b><p>Wie viel Strom maximal über das Element fließen darf, bevor es thermisch überlastet ist, in MW. Berechnet aus dem zulässigen Strom (Imax) und der Spannung.</p>`,
-  fref: `<b>Fref</b><p>Der Fluss, der im Referenzfall schon über das Element läuft, in MW, also bevor die Börse den grenzüberschreitenden Handel verteilt. Er kommt aus Erzeugung und Verbrauch in den Ländern selbst und aus Ringflüssen.</p>`,
+  fref: `<b>Fref</b><p>Der erwartete Fluss im Referenzfall, in MW: die Prognose der Netzbetreiber für den Tag, einschließlich des Handels, den sie dabei angenommen haben.</p>`,
+  f0: `<b>F0 (Grundfluss ohne Handel)</b><p>Der Fluss, der auch ganz ohne Handel zwischen den Core-Ländern über das Element laufen würde, in MW. Er entsteht durch Erzeugung und Verbrauch innerhalb der Länder, durch Handel mit Ländern außerhalb von Core und durch Ringflüsse.</p><p>In vereinfachten Erklärungen heißt dieser Teil oft „Fref“. Für die Berechnung des RAM nutzt die Börse genau diesen Wert.</p>`,
+  amr: `<b>AMR (Anpassung für Mindest-RAM)</b><p>Ein Aufschlag in MW, damit der Handel mindestens die vorgeschriebene Kapazität bekommt (siehe Mindest-RAM). Ist er groß, erlaubt die Börse mehr Handel, als das Netz ohne Eingriffe tragen würde. Die Netzbetreiber müssen das dann z. B. mit Redispatch absichern.</p>`,
   frm: `<b>FRM (Flow Reliability Margin)</b><p>Ein Sicherheitspuffer in MW. Er deckt ab, dass Prognosen zu Wind, Sonne und Verbrauch nie ganz stimmen.</p>`,
-  ram: `<b>RAM (Remaining Available Margin)</b><p>Was nach Abzug von Grundlast und Puffer für den Handel übrig bleibt, in MW. Vereinfacht: RAM = Fmax − Fref − FRM (dazu kommen noch kleine Korrekturen der Netzbetreiber).</p><p>Ist das RAM eines Elements ausgeschöpft, ist es bindend.</p>`,
+  ram: `<b>RAM (Remaining Available Margin)</b><p>Was nach Abzug von Grundfluss und Puffer für den Handel übrig bleibt, in MW. So rechnet die Börse: RAM = Fmax − FRM − F0 + AMR (dazu können noch kleine Korrekturen der Netzbetreiber kommen).</p><p>Ist das RAM eines Elements ausgeschöpft, ist es bindend.</p>`,
   mrf: `<b>Mindest-RAM</b><p>Anteil von Fmax, der mindestens für grenzüberschreitenden Handel freigehalten werden muss, in Prozent. Die EU verlangt grundsätzlich 70 %. Übergangsregeln und Ausnahmen der Länder erlauben teils niedrigere Werte.</p>`,
   cont: `<b>Angenommener Ausfall</b><p>Für welchen Ausfall dieses Element geprüft wurde. „Basecase“ heißt: ohne Ausfall, im Normalzustand.</p>`,
   zuordnung: `<b>Position auf der Karte</b><p>Die Börse nennt nur Namen wie „Diele – Meeden“. Das Dashboard sucht die beiden Umspannwerke in OpenStreetMap und verbindet sie mit einer <b>geraden</b> Linie. Der echte Leitungsverlauf ist die graue Linie darunter. Ein Kreis steht für einen Transformator in einem Umspannwerk. Engpässe, deren Namen nicht zugeordnet werden konnten, stehen nur in der Liste.</p>`,
@@ -176,11 +178,12 @@ function buildMap() {
   map.createPane("over"); map.getPane("over").style.zIndex = 500;
   map.createPane("arrows"); map.getPane("arrows").style.zIndex = 520;
   map.createPane("sel"); map.getPane("sel").style.zIndex = 540; map.getPane("sel").style.pointerEvents = "none";
-  const home = () => map.fitBounds([[47.2, 5.8], [55.1, 15.1]], { padding: [4, 4] });
-  home(); let touched = false; map.on("dragstart zoomstart", e => { if (e.hard !== false && map._loaded) touched = true; });
-  layerObj.home = home; setTimeout(() => { map.invalidateSize(); if (!touched) home(); touched = false; }, 60);
+  const home = () => map.fitBounds([[47.2, 5.8], [55.1, 15.1]], { padding: map.getSize().x < 500 ? [22, 22] : [6, 6] });
+  home(); let touched = false; ["pointerdown", "wheel", "touchstart"].forEach(t => map.getContainer().addEventListener(t, () => { touched = true; }, { passive: true }));
+  layerObj.home = home; [60, 400].forEach(ms => setTimeout(() => { map.invalidateSize(); if (!touched) home(); }, ms));
   setTiles();
   map.on("click", ev => pickLine(ev));
+  map.on("zoomend", () => renderFlows());
   map.on("focus", () => map.scrollWheelZoom.enable());
   map.getContainer().addEventListener("mouseleave", () => map.scrollWheelZoom.disable());
   if (window.matchMedia) window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => setTimeout(() => { setTiles(); drawGrid(); renderDay(); renderFlows(); }, 50));
@@ -387,6 +390,7 @@ function showLine(it) {
   if (l[3]) kv(d, "Betreiber", l[3]);
   if (l[4]) kv(d, "Stromkreise", l[4]);
   kv(d, "Bauart", (l[1] & 1) ? "Kabel (unterirdisch oder Seekabel)" : "Freileitung");
+  if (/s[uü]e?dlink|s[uü]e?dostlink|a-?nord/i.test(l[2] || "")) d.appendChild(el("p", "muted", "Diese Gleichstromverbindung ist noch im Bau. Eingezeichnet sind Abschnitte, die in OpenStreetMap schon eingetragen sind."));
   d.appendChild(el("p", "muted", "Aus OpenStreetMap. Wie stark eine einzelne Leitung ausgelastet ist, veröffentlichen die Netzbetreiber nicht."));
 }
 function strip96(q) {
@@ -395,12 +399,15 @@ function strip96(q) {
   const ax = el("div", "nz-strip-ax"); ["0", "6", "12", "18", "24 Uhr"].forEach(t => ax.appendChild(el("span", null, t)));
   const w = el("div"); w.append(s, ax); return w;
 }
+const TSO = { TennetBv: "TenneT (Niederlande)", TennetGmbh: "TenneT (Deutschland)", TenneTGmbh: "TenneT (Deutschland)", Amprion: "Amprion (Deutschland)", "50Hertz": "50Hertz (Deutschland)", TransnetBw: "TransnetBW (Deutschland)", TransnetBW: "TransnetBW (Deutschland)",
+  Elia: "Elia (Belgien)", Rte: "RTE (Frankreich)", Apg: "APG (Österreich)", Ceps: "ČEPS (Tschechien)", Pse: "PSE (Polen)", Mavir: "MAVIR (Ungarn)", Seps: "SEPS (Slowakei)", Eles: "ELES (Slowenien)", Hops: "HOPS (Kroatien)", Transelectrica: "Transelectrica (Rumänien)", Creos: "Creos (Luxemburg)" };
+function tsoName(t) { return TSO[t] || t; }
 function showCnec(c) {
   const d = detail();
   const cat = el("div", "nz-cat", c.kind === "extern" ? "Externe Grenze" : (c.kind === "trafo" ? "Transformator · bindender Engpass" : "Leitung · bindender Engpass"));
   cat.appendChild(iBtn(c.kind === "extern" ? "extern" : "cnec")); d.appendChild(cat);
   d.appendChild(el("h3", null, c.name.trim()));
-  kv(d, "Netzbetreiber", c.tso + (c.de ? " (Deutschland)" : ""));
+  kv(d, "Netzbetreiber", tsoName(c.tso));
   if (c.cont) kv(d, "Angenommener Ausfall", c.cont.replace(/^N-1\s*/i, ""), "cont");
   kv(d, "Bindend", c.qh + " von 96 Viertelstunden", "bindend");
   const sp = el("div", "nz-sub2"); sp.appendChild(document.createTextNode("Schattenpreis")); sp.appendChild(iBtn("schatten", "Schattenpreis")); d.appendChild(sp);
@@ -408,18 +415,21 @@ function showCnec(c) {
   d.appendChild(strip96(c.q || []));
   if (c.fmax != null) {
     const sp2 = el("div", "nz-sub2", "Kapazität im Schnitt der bindenden Viertelstunden"); d.appendChild(sp2);
-    d.appendChild(capBar(c));
+    if (c.f0 != null) d.appendChild(capBar(c));
     kv(d, "Fmax", nf0.format(c.fmax) + " MW", "fmax");
-    if (c.fref != null) kv(d, "Fref", nf0.format(c.fref) + " MW", "fref");
-    if (c.frm != null) kv(d, "FRM", nf0.format(c.frm) + " MW", "frm");
-    if (c.ram != null) kv(d, "RAM", nf0.format(c.ram) + " MW", "ram");
+    if (c.frm != null) kv(d, "FRM", "− " + nf0.format(c.frm) + " MW", "frm");
+    if (c.f0 != null) kv(d, "F0", "− " + nf0.format(c.f0) + " MW", "f0");
+    else if (c.fref != null) kv(d, "Fref", nf0.format(c.fref) + " MW", "fref");
+    if (c.amr) kv(d, "AMR", "+ " + nf0.format(c.amr) + " MW", "amr");
+    if (c.ram != null) kv(d, "RAM", "= " + nf0.format(c.ram) + " MW", "ram");
     if (c.mrf != null) kv(d, "Mindest-RAM", nf0.format(c.mrf) + " %", "mrf");
   }
   const z = el("p", "muted"); z.textContent = c.geo && c.geo.length ? "Auf der Karte: " + c.geo.map(g => g[2]).join(" – ") + " " : "Keine Kartenposition gefunden. "; z.appendChild(iBtn("zuordnung")); d.appendChild(z);
 }
 function capBar(c) {
   const box = el("div", "nz-cap");
-  const fm = c.fmax || 1, segs = [["Fref", Math.max(0, Math.min(c.fref || 0, fm)), "--axis"], ["FRM", Math.max(0, c.frm || 0), "--muted"], ["RAM", Math.max(0, c.ram || 0), "--c-pv"]];
+  const fm = c.fmax || 1, base = c.f0 != null ? ["F0", Math.max(0, c.f0), "--axis"] : ["Fref", Math.max(0, Math.min(c.fref || 0, fm)), "--axis"];
+  const segs = [base, ["FRM", Math.max(0, c.frm || 0), "--muted"], ["RAM", Math.max(0, c.ram || 0), "--c-pv"]];
   const tot = Math.max(fm, segs.reduce((s, x) => s + x[1], 0));
   const bar = el("div", "bar"); segs.forEach(([n, v, col]) => { if (v <= 0) return; const s = el("div"); s.style.width = (v / tot * 100) + "%"; s.style.background = css(col); s.title = n + ": " + nf0.format(v) + " MW"; bar.appendChild(s); });
   const leg = el("div", "ed-legend"); segs.forEach(([n, , col]) => { const s = el("span"); const i = el("i"); i.style.background = css(col); s.append(i, document.createTextNode(n)); leg.appendChild(s); });
@@ -473,7 +483,7 @@ function renderTiles() {
   const box = $("nzTiles"); box.textContent = "";
   const cs = cnecsOf(day), rd = rdOf(day);
   const inner = cs.filter(c => c.kind !== "extern");
-  tile(box, "Bindende Engpässe", String(inner.length), "", inner.filter(c => c.de).length + " davon bei deutschen Netzbetreibern", "cnec");
+  tile(box, "Bindende Engpässe", String(inner.length), "", inner.filter(c => c.de).length + " davon in Deutschland oder an seinen Grenzen", "cnec");
   const top = cs[0];
   tile(box, "Teuerster Engpass", top ? nf0.format(top.sum) : "–", "€/MW", top ? top.name.trim() : "", "schatten");
   const upE = rd ? rd.tot.up : null, dn = rd ? rd.tot.down : null;
@@ -489,7 +499,7 @@ function renderCnecList() {
   const tb = el("div", "nz-list");
   cs.slice(0, 25).forEach(c => {
     const r = el("button", "nz-row"); r.type = "button";
-    const nm = el("div", "nm"); nm.appendChild(el("span", null, c.name.trim())); const meta = el("small", null, c.tso + " · " + c.qh + "/96 Viertelstunden" + (c.geo && c.geo.length ? "" : " · nicht auf der Karte")); nm.appendChild(meta);
+    const nm = el("div", "nm"); nm.appendChild(el("span", null, c.name.trim())); const meta = el("small", null, tsoName(c.tso) + " · " + c.qh + "/96 Viertelstunden" + (c.geo && c.geo.length ? "" : " · nicht auf der Karte")); nm.appendChild(meta);
     const bar = el("div", "bar"); const f = el("div"); f.style.width = (c.sum / mx * 100) + "%"; f.style.background = css("--c-pv"); bar.appendChild(f);
     const v = el("b", null, nf0.format(c.sum));
     r.append(nm, bar, v);
@@ -571,7 +581,8 @@ function renderBorders() {
 }
 
 window.NetzeTab = {
-  show() { if (!inited) init(); else if (map) setTimeout(() => map.invalidateSize(), 30); }
+  show() { if (!inited) init(); else if (map) setTimeout(() => map.invalidateSize(), 30); },
+  get map() { return map; }
 };
 })();
 // Falls der Reiter schon beim Laden der Seite offen ist (gespeicherter Reiter), jetzt starten
