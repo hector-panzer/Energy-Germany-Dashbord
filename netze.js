@@ -136,10 +136,11 @@ async function init() {
   const v = "?v=" + Math.floor(Date.now() / 600000);
   const pD = getJSON("netze/netze.json" + v).catch(e => { console.warn(e); return null; });
   const pG = getJSON("netze/grid_hs.json" + v).catch(e => { console.warn(e); return null; });
+  const pL = getJSON("netze/laender.json").catch(e => { console.warn(e); return null; });
   const pS = loadSmard().catch(e => { console.warn(e); return null; });
   try { await leaflet; } catch (e) { $("nzSub").textContent = "Die Kartenbibliothek konnte nicht geladen werden. Bitte später neu laden."; return; }
   L = window.L;
-  [D, GHS] = await Promise.all([pD, pG]);
+  [D, GHS, LAND] = await Promise.all([pD, pG, pL]);
   buildMap();
   if (!D) { $("nzSub").textContent = "Die Netzdaten werden gerade zum ersten Mal erzeugt. Schau in ein paar Minuten wieder vorbei."; }
   const days = D ? D.tage.filter(d => (D.jao[d] && D.jao[d].cnecs) || (D.redispatch[d] && D.redispatch[d].plants)) : [];
@@ -162,18 +163,33 @@ function buildDays(days) {
 
 /* ---------------- Karte ---------------- */
 function dark() { return css("--page").toLowerCase() === "#0d0d0d"; }
-let base, labels;
+let LAND = null, baseLayers = [];
+const CITIES = [["Berlin", 52.52, 13.40], ["Hamburg", 53.55, 9.99], ["München", 48.14, 11.58], ["Köln", 50.94, 6.96], ["Frankfurt", 50.11, 8.68], ["Stuttgart", 48.78, 9.18],
+  ["Leipzig", 51.34, 12.37], ["Dresden", 51.05, 13.74], ["Hannover", 52.37, 9.73], ["Nürnberg", 49.45, 11.08], ["Bremen", 53.08, 8.80], ["Kiel", 54.32, 10.13],
+  ["Rostock", 54.09, 12.10], ["Dortmund", 51.51, 7.47], ["Erfurt", 50.98, 11.03], ["Magdeburg", 52.13, 11.63], ["Amsterdam", 52.37, 4.90], ["Brüssel", 50.85, 4.35],
+  ["Wien", 48.21, 16.37], ["Prag", 50.08, 14.44], ["Kopenhagen", 55.68, 12.57], ["Zürich", 47.37, 8.54], ["Luxemburg", 49.61, 6.13], ["Straßburg", 48.58, 7.75]];
 function setTiles() {
-  const th = dark() ? "dark" : "light";
-  const opt = { subdomains: "abcd", maxZoom: 18, attribution: '© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>-Mitwirkende · © <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>' };
-  if (base) map.removeLayer(base); if (labels) map.removeLayer(labels);
-  base = L.tileLayer(`https://{s}.basemaps.cartocdn.com/${th}_nolabels/{z}/{x}/{y}{r}.png`, opt).addTo(map);
-  labels = L.tileLayer(`https://{s}.basemaps.cartocdn.com/${th}_only_labels/{z}/{x}/{y}{r}.png`, { subdomains: "abcd", maxZoom: 18, pane: "labels" }).addTo(map);
+  baseLayers.forEach(l => map.removeLayer(l)); baseLayers = [];
+  const d = dark();
+  map.getContainer().style.background = d ? "#141c24" : "#e8eef3";
+  if (LAND) LAND.laender.forEach(([iso, name, rings]) => {
+    const de = iso === "DEU";
+    const poly = L.polygon(rings.map(decode), { pane: "base", interactive: false, renderer: layerObj.baseR,
+      color: d ? (de ? "#6b6a65" : "#3a3936") : (de ? "#9a9893" : "#c9c8c0"), weight: de ? 1.4 : 0.8,
+      fillColor: d ? (de ? "#1f1f1d" : "#181817") : (de ? "#ffffff" : "#f6f6f3"), fillOpacity: 1 });
+    baseLayers.push(poly.addTo(map));
+  });
+  CITIES.forEach(([n, la, lo]) => {
+    const m = L.marker([la, lo], { pane: "labels", interactive: false, keyboard: false, icon: L.divIcon({ className: "nz-city", html: `<i></i><span>${n}</span>`, iconSize: null }) });
+    baseLayers.push(m.addTo(map));
+  });
 }
 function buildMap() {
   map = L.map("nzMap", { zoomSnap: 0.25, preferCanvas: true, attributionControl: true, scrollWheelZoom: false, worldCopyJump: false, minZoom: 4, maxZoom: 13 });
   map.attributionControl.setPrefix(false);
+  map.createPane("base"); map.getPane("base").style.zIndex = 150;
   map.createPane("labels"); map.getPane("labels").style.zIndex = 450; map.getPane("labels").style.pointerEvents = "none";
+  layerObj.baseR = L.canvas({ padding: 0.3, pane: "base" });
   map.createPane("grid"); map.getPane("grid").style.zIndex = 350;
   map.createPane("over"); map.getPane("over").style.zIndex = 500;
   map.createPane("arrows"); map.getPane("arrows").style.zIndex = 520;
@@ -183,12 +199,11 @@ function buildMap() {
   layerObj.home = home; [60, 400].forEach(ms => setTimeout(() => { map.invalidateSize(); if (!touched) home(); }, ms));
   setTiles();
   map.on("click", ev => pickLine(ev));
-  map.on("zoomend", () => renderFlows());
+  map.on("zoomend", () => { renderFlows(); map.getContainer().classList.toggle("nz-z-lo", map.getZoom() < 5.4); });
   map.on("focus", () => map.scrollWheelZoom.enable());
   map.getContainer().addEventListener("mouseleave", () => map.scrollWheelZoom.disable());
   if (window.matchMedia) window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => setTimeout(() => { setTiles(); drawGrid(); renderDay(); renderFlows(); }, 50));
-  const R = L.canvas({ padding: 0.3, pane: "grid", tolerance: 0 });
-  layerObj.renderer = R;
+
   const ro = new ResizeObserver(() => map.invalidateSize()); ro.observe($("nzMap"));
   buildLayerToggles();
 }
