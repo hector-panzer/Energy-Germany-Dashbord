@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#f9f9f7">
+<meta name="apple-mobile-web-app-title" content="Strom DE">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<title>Energie-Dashboard Deutschland</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<style>
+.ed {
+  color-scheme: light;
+  --page: #f9f9f7; --surface: #fcfcfb; --ink: #0b0b0b; --ink2: #52514e; --muted: #898781;
+  --grid: #e1e0d9; --axis: #c3c2b7; --ring: rgba(11,11,11,0.10); --wash: rgba(11,11,11,0.04);
+  --c-wind: #2a78d6; --c-pv: #eb6834; --c-wasser: #1baf7a; --c-bio: #eda100;
+  --c-gas: #e87ba4; --c-stein: #6250d6; --c-braun: #e34948; --c-sonst: #9a9893;
+  --c-load: #0b0b0b; --c-resid: #6250d6; --pos: #2a78d6; --neg: #e34948; --good: #006300;
+}
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme="light"])) .ed {
+    color-scheme: dark;
+    --page: #0d0d0d; --surface: #1a1a19; --ink: #f0efec; --ink2: #c3c2b7; --muted: #898781;
+    --grid: #2c2c2a; --axis: #383835; --ring: rgba(255,255,255,0.10); --wash: rgba(255,255,255,0.05);
+    --c-wind: #3987e5; --c-pv: #d95926; --c-wasser: #199e70; --c-bio: #c98500;
+    --c-gas: #d55181; --c-stein: #9085e9; --c-braun: #e66767; --c-sonst: #75736e;
+    --c-load: #f0efec; --c-resid: #9085e9; --pos: #3987e5; --neg: #e66767; --good: #0ca30c;
+  }
+}
+:root[data-theme="dark"] .ed {
+  color-scheme: dark;
+  --page: #0d0d0d; --surface: #1a1a19; --ink: #f0efec; --ink2: #c3c2b7; --muted: #898781;
+  --grid: #2c2c2a; --axis: #383835; --ring: rgba(255,255,255,0.10); --wash: rgba(255,255,255,0.05);
+  --c-wind: #3987e5; --c-pv: #d95926; --c-wasser: #199e70; --c-bio: #c98500;
+  --c-gas: #d55181; --c-stein: #9085e9; --c-braun: #e66767; --c-sonst: #75736e;
+  --c-load: #f0efec; --c-resid: #9085e9; --pos: #3987e5; --neg: #e66767; --good: #0ca30c;
+}
+html, body { margin: 0; }
+.ed { background: var(--page); color: var(--ink); font: 15px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; min-height: 100vh; }
+.ed * { box-sizing: border-box; }
+.ed-wrap { max-width: 980px; margin: 0 auto; padding: 16px 14px 48px; }
+.ed h1 { font-size: 20px; margin: 0; font-weight: 650; letter-spacing: -0.01em; }
+.ed h2 { font-size: 16px; margin: 0 0 2px; font-weight: 620; }
+.ed .sub { color: var(--ink2); font-size: 13px; margin: 0; }
+.ed .muted { color: var(--muted); font-size: 12px; }
+.ed-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 6px 16px; margin-bottom: 12px; }
+.ed-tabs { display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; margin: 0 -14px 14px; padding: 0 14px; position: sticky; top: 0; z-index: 5; background: var(--page); padding-top: 6px; padding-bottom: 6px; }
+.ed-tabs::-webkit-scrollbar { display: none; }
+.ed-tab { flex: 0 0 auto; border: 1px solid var(--ring); background: var(--surface); color: var(--ink2); font: inherit; font-size: 14px; padding: 7px 13px; border-radius: 999px; cursor: pointer; }
+.ed-tab[aria-selected="true"] { background: var(--ink); color: var(--page); border-color: var(--ink); }
+.ed-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 12px; }
+.ed-seg { display: inline-flex; border: 1px solid var(--ring); border-radius: 8px; overflow: hidden; background: var(--surface); }
+.ed-seg button { border: 0; background: transparent; color: var(--ink2); font: inherit; font-size: 13px; padding: 6px 12px; cursor: pointer; }
+.ed-seg button[aria-pressed="true"] { background: var(--wash); color: var(--ink); font-weight: 620; }
+.ed-card { background: var(--surface); border: 1px solid var(--ring); border-radius: 14px; padding: 14px; margin-bottom: 12px; }
+.ed-tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-bottom: 12px; }
+@media (min-width: 720px) { .ed-tiles { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.ed-tile { background: var(--surface); border: 1px solid var(--ring); border-radius: 14px; padding: 12px; }
+.ed-tile .lab { color: var(--ink2); font-size: 13px; }
+.ed-tile .val { font-size: 24px; font-weight: 620; margin-top: 2px; }
+.ed-tile .val small { font-size: 14px; font-weight: 500; color: var(--ink2); }
+.ed-tile .note { color: var(--muted); font-size: 12px; margin-top: 2px; }
+.ed-hero { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 4px 18px; }
+.ed-hero .big { font-size: 52px; font-weight: 650; line-height: 1; letter-spacing: -0.02em; }
+.ed-hero .unit { font-size: 18px; color: var(--ink2); font-weight: 500; }
+.ed-chart { position: relative; width: 100%; touch-action: pan-y; }
+.ed-chart svg { display: block; overflow: visible; }
+.ed-chart text { fill: var(--muted); font-size: 11px; font-variant-numeric: tabular-nums; }
+.ed-chart .grid line { stroke: var(--grid); }
+.ed-chart .grid path, .ed-chart .axis path { display: none; }
+.ed-chart .axis line { stroke: var(--axis); }
+.ed-chart .base { stroke: var(--axis); }
+.ed-tip { position: absolute; pointer-events: none; background: var(--surface); border: 1px solid var(--ring); box-shadow: 0 4px 16px rgba(0,0,0,0.12); border-radius: 10px; padding: 8px 10px; font-size: 12px; min-width: 150px; opacity: 0; transition: opacity .08s; z-index: 3; }
+.ed-tip .t { color: var(--ink2); margin-bottom: 4px; }
+.ed-tip.dock { position: static; opacity: 1 !important; box-shadow: none; margin-top: 8px; display: grid; grid-template-columns: 1fr 1fr; column-gap: 10px; background: var(--wash); border-color: transparent; }
+.ed-tip.dock .t { grid-column: 1 / -1; }
+.ed-tip.dock .r.sum { grid-column: 1 / -1; }
+.ed-tip.dock .r b { min-width: 34px; }
+.ed-tip .r { display: flex; align-items: center; gap: 6px; line-height: 1.6; }
+.ed-tip .r i { width: 12px; height: 2px; border-radius: 1px; flex: 0 0 auto; }
+.ed-tip .r b { font-weight: 620; font-variant-numeric: tabular-nums; min-width: 52px; text-align: right; }
+.ed-tip .r span { color: var(--ink2); }
+.ed-tip .r.sum { border-top: 1px solid var(--grid); margin-top: 3px; padding-top: 3px; }
+.ed-legend { display: flex; flex-wrap: wrap; gap: 4px 14px; margin: 8px 0 4px; font-size: 13px; color: var(--ink2); }
+.ed-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.ed-legend i { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+.ed-legend i.line { height: 2px; width: 14px; border-radius: 1px; }
+.ed-legend i.dash { height: 0; width: 14px; border-top: 2px dashed; border-radius: 0; }
+.ed-segbar { display: flex; gap: 2px; height: 28px; margin: 10px 0 6px; }
+.ed-segbar div { border-radius: 4px; color: #fff; font-size: 12px; font-weight: 600; display: flex; align-items: center; padding-left: 6px; overflow: hidden; white-space: nowrap; min-width: 0; }
+.ed-segbar div.dk { color: #0b0b0b; }
+.ed-groups { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 10px; }
+.ed-groups > div { border-top: 3px solid var(--axis); padding-top: 6px; }
+.ed-groups .v { font-size: 20px; font-weight: 620; }
+.ed-groups .l { font-size: 12px; color: var(--ink2); }
+.ed table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.ed th, .ed td { text-align: right; padding: 5px 6px; border-bottom: 1px solid var(--grid); font-variant-numeric: tabular-nums; }
+.ed th:first-child, .ed td:first-child { text-align: left; }
+.ed th { color: var(--ink2); font-weight: 560; }
+.ed details summary { cursor: pointer; color: var(--ink2); font-size: 13px; margin-top: 8px; }
+.ed .explain { font-size: 14px; color: var(--ink2); }
+.ed .explain p { margin: 6px 0; }
+.ed .formula { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13px; background: var(--wash); border-radius: 8px; padding: 8px 10px; color: var(--ink); margin: 8px 0; overflow-x: auto; }
+.ed .badge { display: inline-block; font-size: 11px; font-weight: 600; padding: 2px 7px; border-radius: 999px; background: var(--wash); color: var(--ink2); border: 1px solid var(--ring); vertical-align: middle; }
+.ed .est { font-size: 26px; font-weight: 650; }
+.ed input[type=range] { width: 100%; accent-color: var(--ink); }
+.ed .param { display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; align-items: center; margin: 8px 0; font-size: 13px; }
+.ed .param label { color: var(--ink2); }
+.ed .param output { font-variant-numeric: tabular-nums; font-weight: 600; }
+.ed .param input { grid-column: 1 / -1; }
+.ed .two { display: grid; gap: 12px; }
+@media (min-width: 760px) { .ed .two { grid-template-columns: 1.4fr 1fr; } }
+.ed .warn { background: var(--wash); border-left: 3px solid var(--axis); padding: 8px 10px; border-radius: 6px; font-size: 13px; color: var(--ink2); margin: 8px 0; }
+.ed [hidden] { display: none !important; }
+.ed a { color: inherit; }
+.ed .strip { display: flex; height: 18px; gap: 0; border-radius: 4px; overflow: hidden; margin: 6px 0 2px; }
+.ed .strip div { flex: 1 1 0; }
+</style>
+</head>
+<body>
+<div class="ed"><div class="ed-wrap">
+
+<div class="ed-head">
+  <div>
+    <h1>Strom in Deutschland</h1>
+    <p class="sub" id="stand">Lade Daten …</p>
+  </div>
+  <a class="muted" href="https://www.smard.de/home/marktdaten" target="_blank" rel="noopener">Quelle: SMARD.de, Bundesnetzagentur</a>
+</div>
+
+<nav class="ed-tabs" role="tablist" id="tabs">
+  <button class="ed-tab" role="tab" data-tab="ueberblick">Überblick</button>
+  <button class="ed-tab" role="tab" data-tab="erzeugung">Erzeugung</button>
+  <button class="ed-tab" role="tab" data-tab="preise">Preise</button>
+  <button class="ed-tab" role="tab" data-tab="residuallast">Residuallast</button>
+  <button class="ed-tab" role="tab" data-tab="handel">Import/Export</button>
+  <button class="ed-tab" role="tab" data-tab="meritorder">Merit Order</button>
+</nav>
+
+<div class="ed-row" id="rangeRow">
+  <div class="ed-seg" id="range">
+    <button data-r="24" aria-pressed="false">Letzte 24 h</button>
+    <button data-r="168" aria-pressed="true">7 Tage</button>
+  </div>
+</div>
+
+<!-- ÜBERBLICK -->
+<section id="p-ueberblick" data-panel="ueberblick">
+  <div class="ed-card">
+    <div class="sub" id="heroLabel">Großhandelspreis gerade</div>
+    <div class="ed-hero">
+      <div><span class="big" id="heroPrice">–</span> <span class="unit">€/MWh</span></div>
+      <div class="sub" id="heroCt"></div>
+    </div>
+    <div class="muted" id="heroNote" style="margin-top:6px"></div>
+  </div>
+  <div class="ed-tiles">
+    <div class="ed-tile"><div class="lab">Anteil Erneuerbare</div><div class="val" id="tEE">–</div><div class="note">letzte 24 h, an der Erzeugung</div></div>
+    <div class="ed-tile"><div class="lab">Netzlast</div><div class="val" id="tLoad">–</div><div class="note" id="tLoadN"></div></div>
+    <div class="ed-tile"><div class="lab">Residuallast</div><div class="val" id="tRes">–</div><div class="note" id="tResN"></div></div>
+    <div class="ed-tile"><div class="lab" id="tTradeL">Nettoexport</div><div class="val" id="tTrade">–</div><div class="note" id="tTradeN"></div></div>
+  </div>
+  <div class="ed-card" id="mixCard">
+    <h2>Woher kam der Strom?</h2>
+    <p class="sub">Erzeugung der letzten 24 Stunden nach Energieträger</p>
+    <div class="ed-segbar" id="mixBar" role="img"></div>
+    <div class="ed-legend" id="mixLegend"></div>
+    <div class="ed-groups" id="mixGroups"></div>
+    <details><summary>Werte als Tabelle</summary><table id="mixTable"></table></details>
+  </div>
+  <div class="ed-card" id="dailyCard">
+    <h2>Stromverbrauch pro Tag</h2>
+    <p class="sub">Netzlast je Kalendertag zusammengerechnet, in GWh</p>
+    <div class="ed-hero" style="margin-top:8px"><div><span class="big" id="dayBig" style="font-size:40px">–</span> <span class="unit">GWh</span></div><div class="sub" id="dayBigN"></div></div>
+    <div class="ed-chart" id="dayChart" style="margin-top:10px"></div>
+    <details><summary>Werte als Tabelle</summary><table id="dayTable"></table></details>
+    <p class="muted">1 GWh = 1 Million kWh. Ein Zwei-Personen-Haushalt verbraucht etwa 2.500 kWh im Jahr; 1 GWh reicht also für rund 400 solcher Haushalte ein Jahr lang. Gezählt wird der Verbrauch aus dem öffentlichen Netz; Strom, den Industrie oder Solaranlagen selbst erzeugen und direkt verbrauchen, fehlt darin.</p>
+  </div>
+</section>
+
+<!-- ERZEUGUNG -->
+<section id="p-erzeugung" data-panel="erzeugung" hidden>
+  <div class="ed-card">
+    <h2>Erzeugung und Verbrauch</h2>
+    <p class="sub">Realisierte Erzeugung nach Energieträger (Flächen) und Netzlast (Linie), in GW</p>
+    <div class="ed-legend" id="genLegend"></div>
+    <div class="ed-chart" id="genChart"></div>
+    <p class="muted">Liegt die Erzeugung über der Netzlast, exportiert Deutschland, darunter wird importiert. Tippe oder fahre über das Diagramm für die Werte.</p>
+  </div>
+</section>
+
+<!-- PREISE -->
+<section id="p-preise" data-panel="preise" hidden>
+  <div class="ed-tiles" id="priceTiles"></div>
+  <div class="ed-card">
+    <h2>Day-Ahead-Großhandelspreis</h2>
+    <p class="sub">Deutschland/Luxemburg, je Viertelstunde, in €/MWh</p>
+    <div class="ed-chart" id="priceChart"></div>
+    <div class="warn" id="priceGap" hidden></div>
+    <p class="muted">Der Preis wird am Vortag um 12 Uhr in einer europaweit gekoppelten Auktion ermittelt. Deshalb kennt man die Preise für heute schon, während die Erzeugung erst mit einigen Stunden Verzögerung veröffentlicht wird. 100 €/MWh entsprechen 10 ct/kWh.</p>
+  </div>
+</section>
+
+<!-- RESIDUALLAST -->
+<section id="p-residuallast" data-panel="residuallast" hidden>
+  <div class="ed-card">
+    <h2>Netzlast und Residuallast</h2>
+    <p class="sub">In GW. Die Lücke zwischen den Linien deckten Wind und Sonne.</p>
+    <div class="ed-legend" id="resLegend"></div>
+    <div class="ed-chart" id="resChart"></div>
+  </div>
+  <div class="ed-card explain">
+    <h2>Was ist die Residuallast?</h2>
+    <p>Die Residuallast ist der Teil der Nachfrage, der übrig bleibt, wenn man die schwankenden Erneuerbaren abzieht:</p>
+    <div class="formula">Residuallast = Netzlast − Wind onshore − Wind offshore − Photovoltaik</div>
+    <p>Diesen Rest müssen steuerbare Kraftwerke (Gas, Kohle, Biomasse, Wasser), Speicher und Importe decken. Je höher die Residuallast, desto teurere Kraftwerke werden gebraucht und desto höher ist meist der Preis. Wird sie negativ, gibt es mehr Wind- und Solarstrom als Bedarf; dann sind negative Preise typisch.</p>
+    <p class="muted">Die Werte für die Residuallast kommen direkt von SMARD.</p>
+  </div>
+</section>
+
+<!-- HANDEL -->
+<section id="p-handel" data-panel="handel" hidden>
+  <div class="ed-card">
+    <h2>Nettoexport im Zeitverlauf</h2>
+    <p class="sub">Physikalische Stromflüsse über die Grenzen, in GW. Über null: Deutschland exportiert, unter null: es importiert.</p>
+    <div class="ed-legend"><span><i style="background:var(--pos)"></i>Nettoexport</span><span><i style="background:var(--neg)"></i>Nettoimport</span></div>
+    <div class="ed-chart" id="tradeChart"></div>
+  </div>
+  <div class="ed-card">
+    <h2>Mit welchen Ländern?</h2>
+    <p class="sub" id="ctySub">Strommengen in GWh</p>
+    <div class="ed-legend"><span><i style="background:var(--pos)"></i>Export dorthin</span><span><i style="background:var(--neg)"></i>Import von dort</span></div>
+    <div class="ed-chart" id="ctyChart"></div>
+    <details><summary>Werte als Tabelle</summary><table id="ctyTable"></table></details>
+    <p class="muted">Physikalische Flüsse zeigen, wo der Strom tatsächlich über die Leitungen fließt. Sie können von den gehandelten Mengen abweichen, weil Strom auch durch Deutschland hindurch in andere Länder fließt.</p>
+  </div>
+</section>
+
+<!-- MERIT ORDER -->
+<section id="p-meritorder" data-panel="meritorder" hidden>
+  <div class="ed-card">
+    <span class="badge">Modellschätzung</span>
+    <h2 style="margin-top:6px">Wer setzt den Preis?</h2>
+    <p class="sub">Vermutlich preissetzende Technologie je Stunde, geschätzt aus Börsenpreis und typischen Grenzkosten</p>
+    <div class="strip" id="moStrip" role="img"></div>
+    <div class="ed-chart" id="moStripAxis" style="height:18px"></div>
+    <div class="ed-legend" id="moStripLegend"></div>
+  </div>
+  <div class="two">
+    <div class="ed-card">
+      <div class="param"><label for="moHour">Stunde wählen</label><output id="moHourOut"></output><input type="range" id="moHour" min="0" max="168" step="1"></div>
+      <div class="sub">Geschätzt preissetzend</div>
+      <div class="est" id="moEst">–</div>
+      <div class="sub" id="moEstWhy"></div>
+      <div class="ed-chart" id="moChart" style="margin-top:10px"></div>
+      <div class="ed-legend" id="moLegend"></div>
+    </div>
+    <div class="ed-card">
+      <h2>Annahmen</h2>
+      <p class="sub">Verschiebe die Regler, um zu sehen, wie sich die Merit Order ändert.</p>
+      <div class="param"><label for="pGas">Gaspreis (TTF)</label><output id="pGasO"></output><input type="range" id="pGas" min="20" max="150" step="1" value="88"></div>
+      <div class="param"><label for="pCo2">CO₂-Preis (EU-ETS)</label><output id="pCo2O"></output><input type="range" id="pCo2" min="20" max="200" step="1" value="88"></div>
+      <div class="param"><label for="pCoal">Steinkohlepreis</label><output id="pCoalO"></output><input type="range" id="pCoal" min="5" max="30" step="0.5" value="12"></div>
+      <table id="moTable"></table>
+      <p class="muted">Startwerte: Gas und CO₂ etwa auf dem Niveau von Mitte November 2026, Kohle grob geschätzt. Kapazitäten sind gerundete Annahmen für Deutschland. Echte Gebote sind nicht öffentlich, der Preis entsteht europaweit gekoppelt, und Speicher, Importe oder flexible Verbraucher können ihn ebenfalls setzen. Die Schätzung ist deshalb ein Lernmodell, kein Messwert.</p>
+    </div>
+  </div>
+</section>
+
+<p class="muted" style="margin-top:18px"><button id="reload" class="ed-tab" style="font-size:13px;padding:5px 11px">Neu laden</button></p>
+<p class="muted">Alle Zeiten in deutscher Zeit. Daten: SMARD.de (Bundesnetzagentur), Lizenz CC BY 4.0. Realisierte Werte erscheinen mit einigen Stunden Verzögerung.</p>
+</div></div>
+
+<script>
+(function () {
+"use strict";
+const TZ = "Europe/Berlin";
+const H = 3600000, Q = 900000;
+const nf0 = new Intl.NumberFormat("de-DE", { maximumFractionDigits: 0 });
+const nf1 = new Intl.NumberFormat("de-DE", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+const nf2 = new Intl.NumberFormat("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const fDay = new Intl.DateTimeFormat("de-DE", { timeZone: TZ, weekday: "short", day: "2-digit", month: "2-digit" });
+const fTime = new Intl.DateTimeFormat("de-DE", { timeZone: TZ, hour: "2-digit", minute: "2-digit" });
+const fFull = new Intl.DateTimeFormat("de-DE", { timeZone: TZ, weekday: "short", day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" });
+const fShort = new Intl.DateTimeFormat("de-DE", { timeZone: TZ, day: "2-digit", month: "2-digit" });
+const fDate = new Intl.DateTimeFormat("de-DE", { timeZone: TZ, day: "2-digit", month: "2-digit", year: "numeric" });
+const berlinHour = t => +new Intl.DateTimeFormat("en-GB", { timeZone: TZ, hour: "2-digit", hourCycle: "h23" }).format(t);
+const css = v => getComputedStyle(document.querySelector(".ed")).getPropertyValue(v).trim();
+const GW = v => v == null ? "–" : nf1.format(v / 1000);
+
+const SOURCES = [
+  { k: "wind", name: "Wind", c: "--c-wind", ee: true },
+  { k: "pv", name: "Photovoltaik", c: "--c-pv", ee: true },
+  { k: "wasser", name: "Wasser & sonst. EE", c: "--c-wasser", ee: true },
+  { k: "bio", name: "Biomasse", c: "--c-bio", ee: true, dark: true },
+  { k: "gas", name: "Erdgas", c: "--c-gas", fossil: true },
+  { k: "stein", name: "Steinkohle", c: "--c-stein", fossil: true },
+  { k: "braun", name: "Braunkohle", c: "--c-braun", fossil: true },
+  { k: "sonst", name: "Speicher & Sonstige", c: "--c-sonst" }
+];
+
+let D, N, T, G = {}, priceH = [], range = 168, tab = "ueberblick";
+const charts = {};
+
+function prep(d) {
+  D = d; N = d.n; const h = d.hourly;
+  T = d3.range(N).map(i => d.t0 + i * H);
+  const add = (...ks) => d3.range(N).map(i => { let s = 0, any = false; for (const k of ks) { const v = h[k][i]; if (v != null) { s += v; any = true; } } return any ? s : null; });
+  G.wind = add("wind_on", "wind_off"); G.pv = add("pv"); G.wasser = add("wasser", "sonst_ee"); G.bio = add("biomasse");
+  G.gas = add("erdgas"); G.stein = add("steinkohle"); G.braun = add("braunkohle"); G.sonst = add("sonst_konv", "pumpspeicher");
+  G.total = d3.range(N).map(i => d3.sum(SOURCES, s => G[s.k][i] || 0));
+  G.load = h.netzlast; G.resid = h.residuallast; G.net = h.nettoexport;
+  const pq = d.price_qh;
+  priceH = T.map(t => { const vals = []; for (let j = 0; j < 4; j++) { const idx = Math.round((t + j * Q - pq.t0) / Q); const v = pq.values[idx]; if (v != null) vals.push(v); } return vals.length === 4 ? d3.mean(vals) : null; });
+}
+
+/* ---------- generic time chart ---------- */
+function timeChart(el, cfg) {
+  el.textContent = "";
+  const W = el.clientWidth || 340, Hh = cfg.height || (W < 500 ? 240 : 300);
+  const m = { t: 10, r: 8, b: 26, l: 40 };
+  const svg = d3.select(el).append("svg").attr("width", W).attr("height", Hh);
+  const x = d3.scaleTime().domain(cfg.xDomain).range([m.l, W - m.r]);
+  const y = d3.scaleLinear().domain(cfg.yDomain).nice().range([Hh - m.b, m.t]);
+  const days = d3.timeDay.every(1).range(new Date(cfg.xDomain[0]), new Date(cfg.xDomain[1]));
+  const span = cfg.xDomain[1] - cfg.xDomain[0];
+  const ticks = span <= 36 * H ? d3.timeHour.every(W < 500 ? 6 : 3).range(new Date(cfg.xDomain[0]), new Date(+cfg.xDomain[1] + 1)).filter(t => berlinHour(t) % (W < 500 ? 6 : 3) === 0)
+    : T.concat(cfg.extraT || []).filter(t => t >= cfg.xDomain[0] && t <= cfg.xDomain[1] && berlinHour(t) === 0).map(t => new Date(t));
+  const tickFmt = span <= 36 * H ? (t => fTime.format(t)) : (W < 560 ? (t => fShort.format(t)) : (t => fDay.format(t).replace(".,", ",")));
+  svg.append("g").attr("class", "grid").attr("transform", `translate(${m.l},0)`).call(d3.axisLeft(y).ticks(5).tickSize(-(W - m.l - m.r)).tickFormat(""));
+  svg.append("g").attr("class", "axis").attr("transform", `translate(0,${Hh - m.b})`).call(d3.axisBottom(x).tickValues(ticks).tickFormat(tickFmt).tickSizeOuter(0).tickSize(4));
+  svg.append("g").attr("transform", `translate(${m.l - 6},0)`).call(d3.axisLeft(y).ticks(5).tickSize(0).tickFormat(cfg.yFmt || (v => nf0.format(v)))).call(g => g.select("path").remove());
+  if (y.domain()[0] < 0) svg.append("line").attr("class", "base").attr("x1", m.l).attr("x2", W - m.r).attr("y1", y(0)).attr("y2", y(0));
+  else svg.append("line").attr("class", "base").attr("x1", m.l).attr("x2", W - m.r).attr("y1", Hh - m.b).attr("y2", Hh - m.b);
+  const plot = svg.append("g");
+  cfg.draw(plot, x, y, { W, Hh, m });
+  // hover
+  const tip = document.createElement("div"); tip.className = "ed-tip"; el.appendChild(tip);
+  const dock = W < 560; if (dock) tip.classList.add("dock");
+  const cross = svg.append("line").attr("y1", m.t).attr("y2", Hh - m.b).attr("stroke", css("--muted")).attr("stroke-width", 1).style("opacity", 0);
+  const dots = svg.append("g");
+  const ov = svg.append("rect").attr("x", m.l).attr("y", 0).attr("width", W - m.l - m.r).attr("height", Hh).attr("fill", "transparent").style("cursor", "crosshair");
+  function show(ev) {
+    const [px] = d3.pointer(ev, svg.node());
+    fill(cfg.hover(+x.invert(px)), true);
+  }
+  function fill(r, mark) {
+    if (!r) return hide();
+    const cx = x(r.t); cross.attr("x1", cx).attr("x2", cx).style("opacity", mark ? 1 : 0);
+    dots.selectAll("*").remove();
+    if (mark) (r.dots || []).forEach(d => { if (d.v == null) return; dots.append("circle").attr("cx", cx).attr("cy", y(d.v)).attr("r", 4).attr("fill", d.c).attr("stroke", css("--surface")).attr("stroke-width", 2); });
+    tip.textContent = "";
+    const h = document.createElement("div"); h.className = "t"; h.textContent = r.title; tip.appendChild(h);
+    r.rows.forEach(row => { const d = document.createElement("div"); d.className = "r" + (row.sum ? " sum" : ""); const i = document.createElement("i"); i.style.background = row.c || "transparent"; const b = document.createElement("b"); b.textContent = row.v; const s = document.createElement("span"); s.textContent = row.n; d.append(i, b, s); tip.appendChild(d); });
+    tip.style.opacity = 1;
+    if (dock) return;
+    const tw = tip.offsetWidth, th = tip.offsetHeight;
+    let left = cx + 12; if (left + tw > W) left = cx - tw - 12; if (left < 0) left = 0;
+    tip.style.left = left + "px"; tip.style.top = Math.max(0, Math.min(Hh - th, m.t)) + "px";
+  }
+  function hide() { if (!dock) tip.style.opacity = 0; cross.style("opacity", 0); dots.selectAll("*").remove(); }
+  ov.on("pointermove pointerdown", show).on("pointerleave", hide);
+  if (dock) fill(cfg.hover(+cfg.xDomain[1] - 1), false);
+  return { x, y, svg };
+}
+
+function rangeIdx() { const end = N - 1; const start = Math.max(0, end - range); return [start, end]; }
+function nearestIdx(t, i0, i1) { const i = Math.round((t - D.t0) / H); return Math.max(i0, Math.min(i1, i)); }
+
+/* ---------- Überblick ---------- */
+function renderOverview() {
+  // hero price: quarter-hour containing now
+  const pq = D.price_qh; const now = Date.now();
+  let qi = Math.floor((now - pq.t0) / Q); let label = "Großhandelspreis gerade", note = "";
+  const lastQ = pq.values.length - 1;
+  if (qi > lastQ || qi < 0 || pq.values[qi] == null) {
+    qi = lastQ; while (qi > 0 && pq.values[qi] == null) qi--;
+    label = "Letzter bekannter Großhandelspreis";
+    note = "Für die aktuelle Viertelstunde liegt noch kein Preis vor.";
+  }
+  const p = pq.values[qi], tq = pq.t0 + qi * Q;
+  document.getElementById("heroLabel").textContent = label + " · " + fFull.format(tq) + "–" + fTime.format(tq + Q) + " Uhr";
+  document.getElementById("heroPrice").textContent = nf0.format(p);
+  document.getElementById("heroCt").textContent = "= " + nf1.format(p / 10) + " ct/kWh (ohne Steuern, Abgaben, Netzentgelte)";
+  document.getElementById("heroNote").textContent = note;
+  // tiles
+  const e = N - 1, s24 = N - 24;
+  const sum = (arr, a, b) => d3.sum(arr.slice(a, b + 1), v => v || 0);
+  const ee = d3.sum(SOURCES.filter(s => s.ee), s => sum(G[s.k], s24, e)), tot = sum(G.total, s24, e);
+  document.getElementById("tEE").textContent = nf0.format(ee / tot * 100) + " %";
+  const tl = fFull.format(T[e]) + "–" + fTime.format(T[e] + H) + " Uhr";
+  document.getElementById("tLoad").innerHTML = ""; setVal("tLoad", GW(G.load[e]), "GW"); document.getElementById("tLoadN").textContent = tl;
+  setVal("tRes", GW(G.resid[e]), "GW"); document.getElementById("tResN").textContent = tl;
+  const net = G.net[e];
+  document.getElementById("tTradeL").textContent = net >= 0 ? "Nettoexport" : "Nettoimport";
+  setVal("tTrade", GW(Math.abs(net)), "GW"); document.getElementById("tTradeN").textContent = tl;
+  // mix bar
+  const parts = SOURCES.map(s => ({ ...s, v: sum(G[s.k], s24, e) }));
+  const bar = document.getElementById("mixBar"); bar.textContent = "";
+  bar.setAttribute("aria-label", parts.map(p => p.name + " " + nf0.format(p.v / tot * 100) + " %").join(", "));
+  parts.forEach(p => { if (p.v <= 0) return; const d = document.createElement("div"); d.style.flex = p.v + " 1 0"; d.style.background = `var(${p.c})`; if (p.dark) d.className = "dk";
+    const pct = p.v / tot * 100; d.title = p.name + ": " + nf0.format(pct) + " %"; bar.appendChild(d);
+    requestAnimationFrame(() => { const lab = nf0.format(pct) + " %"; if (d.clientWidth > lab.length * 7 + 10) d.textContent = lab; }); });
+  const lg = document.getElementById("mixLegend"); lg.textContent = "";
+  parts.forEach(p => { const s = document.createElement("span"); const i = document.createElement("i"); i.style.background = `var(${p.c})`; s.append(i, document.createTextNode(p.name)); lg.appendChild(s); });
+  const grp = [["Erneuerbare", parts.filter(p => p.ee)], ["Fossile", parts.filter(p => p.fossil)], ["Speicher & Sonstige", parts.filter(p => !p.ee && !p.fossil)]];
+  const gEl = document.getElementById("mixGroups"); gEl.textContent = "";
+  grp.forEach(([n, ps]) => { const v = d3.sum(ps, p => p.v); const d = document.createElement("div"); const a = document.createElement("div"); a.className = "v"; a.textContent = nf0.format(v / tot * 100) + " %"; const b = document.createElement("div"); b.className = "l"; b.textContent = n + " · " + nf0.format(v / 1000) + " GWh"; d.append(a, b); gEl.appendChild(d); });
+  const tb = document.getElementById("mixTable"); tb.innerHTML = "<tr><th>Energieträger</th><th>GWh</th><th>Anteil</th></tr>";
+  parts.forEach(p => { const r = tb.insertRow(); r.insertCell().textContent = p.name; r.insertCell().textContent = nf1.format(p.v / 1000); r.insertCell().textContent = nf1.format(p.v / tot * 100) + " %"; });
+  const r = tb.insertRow(); r.insertCell().textContent = "Summe"; r.insertCell().textContent = nf1.format(tot / 1000); r.insertCell().textContent = "100 %";
+  renderDaily();
+  const r2 = tb.insertRow(); r2.insertCell().textContent = "Netzlast (Vergleich)"; r2.insertCell().textContent = nf1.format(sum(G.load, s24, e) / 1000); r2.insertCell().textContent = "";
+}
+function setVal(id, v, unit) { const el = document.getElementById(id); el.textContent = v + " "; const s = document.createElement("small"); s.textContent = unit; el.appendChild(s); }
+
+
+/* ---------- Verbrauch pro Tag ---------- */
+function dailyLoad() {
+  const days = new Map();
+  T.forEach((t, i) => { const k = fDate.format(t); if (!days.has(k)) days.set(k, { t, idx: [] }); days.get(k).idx.push(i); });
+  return [...days.values()].filter(d => d.idx.length >= 23 && berlinHour(T[d.idx[0]]) === 0 && berlinHour(T[d.idx[d.idx.length - 1]]) === 23 && d.idx.every(i => G.load[i] != null))
+    .map(d => ({ t: d.t, gwh: d3.sum(d.idx, i => G.load[i]) / 1000, ee: d3.sum(d.idx, i => d3.sum(SOURCES.filter(s => s.ee), s => G[s.k][i] || 0)) / 1000, gen: d3.sum(d.idx, i => G.total[i]) / 1000, peak: d3.max(d.idx, i => G.load[i]) / 1000 }));
+}
+function renderDaily() {
+  const days = dailyLoad(); if (!days.length) return;
+  const last = days[days.length - 1];
+  document.getElementById("dayBig").textContent = nf0.format(last.gwh);
+  const avg = d3.mean(days, d => d.gwh);
+  document.getElementById("dayBigN").textContent = "am " + new Intl.DateTimeFormat("de-DE", { timeZone: TZ, weekday: "long", day: "numeric", month: "long" }).format(last.t) + " · Schnitt der letzten " + days.length + " Tage: " + nf0.format(avg) + " GWh";
+  const el = document.getElementById("dayChart"); el.textContent = "";
+  const W = el.clientWidth || 340, Hh = W < 500 ? 200 : 220, m = { t: 20, r: 4, b: 26, l: 4 };
+  const svg = d3.select(el).append("svg").attr("width", W).attr("height", Hh);
+  const x = d3.scaleBand().domain(days.map(d => d.t)).range([m.l, W - m.r]).paddingInner(0.25).paddingOuter(0.1);
+  const y = d3.scaleLinear().domain([0, d3.max(days, d => d.gwh) * 1.08]).range([Hh - m.b, m.t]);
+  svg.append("line").attr("class", "base").attr("x1", m.l).attr("x2", W - m.r).attr("y1", y(0)).attr("y2", y(0));
+  const bw = Math.min(24, x.bandwidth());
+  const tip = document.createElement("div"); tip.className = "ed-tip"; el.appendChild(tip);
+  days.forEach((d, k) => {
+    const cx = x(d.t) + x.bandwidth() / 2, top = y(d.gwh), h = y(0) - top, isLast = k === days.length - 1;
+    svg.append("path").attr("d", `M${cx - bw / 2},${y(0)}v${-(h - 4)}a4,4 0 0 1 4,-4h${bw - 8}a4,4 0 0 1 4,4v${h - 4}z`).attr("fill", css("--c-wind")).attr("fill-opacity", isLast ? 1 : 0.55);
+    svg.append("text").attr("x", cx).attr("y", top - 5).attr("text-anchor", "middle").style("fill", css(isLast ? "--ink" : "--ink2")).style("font-weight", isLast ? 600 : 400).text(nf0.format(d.gwh));
+    svg.append("text").attr("x", cx).attr("y", Hh - 8).attr("text-anchor", "middle").text(W < 500 ? new Intl.DateTimeFormat("de-DE", { timeZone: TZ, weekday: "short" }).format(d.t) : fDay.format(d.t).replace(".,", ","));
+    svg.append("rect").attr("x", x(d.t)).attr("width", x.bandwidth()).attr("y", 0).attr("height", Hh).attr("fill", "transparent")
+      .on("pointermove pointerdown", ev => { tip.textContent = ""; const h0 = document.createElement("div"); h0.className = "t"; h0.textContent = new Intl.DateTimeFormat("de-DE", { timeZone: TZ, weekday: "long", day: "2-digit", month: "2-digit" }).format(d.t); tip.appendChild(h0);
+        [[css("--c-wind"), nf0.format(d.gwh), "GWh Verbrauch"], ["transparent", nf0.format(d.gen), "GWh Erzeugung"], ["transparent", nf0.format(d.ee / d.gen * 100) + " %", "davon erneuerbar"], ["transparent", nf1.format(d.peak), "GW Spitzenlast"]].forEach(([c, v, n]) => { const r = document.createElement("div"); r.className = "r"; const i = document.createElement("i"); i.style.background = c; const b = document.createElement("b"); b.textContent = v; const s2 = document.createElement("span"); s2.textContent = n; r.append(i, b, s2); tip.appendChild(r); });
+        tip.style.opacity = 1; let left = cx + 14; if (left + tip.offsetWidth > W) left = cx - tip.offsetWidth - 14; tip.style.left = Math.max(0, left) + "px"; tip.style.top = "0px"; })
+      .on("pointerleave", () => tip.style.opacity = 0);
+  });
+  const tb = document.getElementById("dayTable"); tb.innerHTML = "<tr><th>Tag</th><th>Verbrauch GWh</th><th>Erzeugung GWh</th><th>EE-Anteil</th></tr>";
+  days.forEach(d => { const r = tb.insertRow(); r.insertCell().textContent = fDay.format(d.t); r.insertCell().textContent = nf0.format(d.gwh); r.insertCell().textContent = nf0.format(d.gen); r.insertCell().textContent = nf0.format(d.ee / d.gen * 100) + " %"; });
+}
+
+/* ---------- Erzeugung ---------- */
+function renderGen() {
+  const [a, b] = rangeIdx(); const idx = d3.range(a, b + 1);
+  const rows = idx.map(i => { const o = { t: T[i] }; SOURCES.forEach(s => o[s.k] = G[s.k][i] || 0); return o; });
+  const stack = d3.stack().keys(SOURCES.map(s => s.k))(rows);
+  const ymax = d3.max(idx, i => Math.max(G.total[i], G.load[i] || 0));
+  const lg = document.getElementById("genLegend"); lg.textContent = "";
+  SOURCES.forEach(s => { const sp = document.createElement("span"); const i = document.createElement("i"); i.style.background = `var(${s.c})`; sp.append(i, document.createTextNode(s.name)); lg.appendChild(sp); });
+  const sp = document.createElement("span"); const li = document.createElement("i"); li.className = "line"; li.style.background = "var(--c-load)"; sp.append(li, document.createTextNode("Netzlast")); lg.appendChild(sp);
+  timeChart(document.getElementById("genChart"), {
+    xDomain: [T[a], T[b]], yDomain: [0, ymax * 1.03], yFmt: v => nf0.format(v / 1000), height: (document.getElementById("genChart").clientWidth < 500 ? 280 : 340),
+    draw(g, x, y) {
+      const area = d3.area().x(d => x(d.data.t)).y0(d => y(d[0])).y1(d => y(d[1])).curve(d3.curveMonotoneX);
+      g.selectAll("path.a").data(stack).join("path").attr("d", area).attr("fill", (d, i) => css(SOURCES[i].c)).attr("stroke", css("--surface")).attr("stroke-width", 1);
+      g.append("path").datum(idx).attr("fill", "none").attr("stroke", css("--c-load")).attr("stroke-width", 2).attr("stroke-linejoin", "round")
+        .attr("d", d3.line().defined(i => G.load[i] != null).x(i => x(T[i])).y(i => y(G.load[i])).curve(d3.curveMonotoneX));
+    },
+    hover(t) { const i = nearestIdx(t, a, b); const tot = G.total[i];
+      const rowsT = SOURCES.slice().reverse().map(s => ({ c: css(s.c), v: GW(G[s.k][i]), n: s.name + " · " + nf0.format((G[s.k][i] || 0) / tot * 100) + " %" }));
+      rowsT.push({ sum: true, c: "transparent", v: GW(tot), n: "Erzeugung gesamt" });
+      rowsT.push({ c: css("--c-load"), v: GW(G.load[i]), n: "Netzlast" });
+      return { t: T[i], title: fFull.format(T[i]) + " Uhr · GW", rows: rowsT, dots: [{ v: G.load[i], c: css("--c-load") }] }; }
+  });
+}
+
+/* ---------- Preise ---------- */
+function renderPrice() {
+  const pq = D.price_qh; const [a] = rangeIdx();
+  const tStart = T[a]; const qa = Math.round((tStart - pq.t0) / Q); const qb = pq.values.length - 1;
+  const qi = d3.range(qa, qb + 1); const vals = qi.map(i => pq.values[i]).filter(v => v != null);
+  // tiles
+  const tiles = document.getElementById("priceTiles"); tiles.textContent = "";
+  const today0 = Date.now(); const qNow = Math.floor((today0 - pq.t0) / Q);
+  const mk = (lab, v, note) => { const d = document.createElement("div"); d.className = "ed-tile"; const l = document.createElement("div"); l.className = "lab"; l.textContent = lab; const vv = document.createElement("div"); vv.className = "val"; vv.textContent = v + " "; const s = document.createElement("small"); s.textContent = "€/MWh"; vv.appendChild(s); const n = document.createElement("div"); n.className = "note"; n.textContent = note; d.append(l, vv, n); tiles.appendChild(d); };
+  const span = range === 24 ? "im gewählten Zeitraum" : "letzte 7 Tage + heute";
+  const minI = qi.filter(i => pq.values[i] != null).reduce((p, i) => pq.values[i] < pq.values[p] ? i : p, qi.find(i => pq.values[i] != null));
+  const maxI = qi.filter(i => pq.values[i] != null).reduce((p, i) => pq.values[i] > pq.values[p] ? i : p, qi.find(i => pq.values[i] != null));
+  mk("Durchschnitt", nf0.format(d3.mean(vals)), span);
+  mk("Tiefster Preis", nf0.format(pq.values[minI]), fFull.format(pq.t0 + minI * Q) + " Uhr");
+  mk("Höchster Preis", nf0.format(pq.values[maxI]), fFull.format(pq.t0 + maxI * Q) + " Uhr");
+  const neg = vals.filter(v => v < 0).length;
+  mk("Negative Preise", String(neg), "Viertelstunden im Zeitraum");
+  tiles.lastChild.querySelector("small").textContent = "";
+  // gap note
+  let gapS = null, gaps = []; qi.forEach(i => { const v = pq.values[i]; if (v == null && gapS == null) gapS = i; if (v != null && gapS != null) { gaps.push([gapS, i - 1]); gapS = null; } });
+  const gEl = document.getElementById("priceGap");
+  if (gaps.length) { gEl.hidden = false; gEl.textContent = "Lücke in den Daten: Für " + gaps.map(([s, e]) => fFull.format(pq.t0 + s * Q) + " bis " + fFull.format(pq.t0 + e * Q + Q) + " Uhr").join(", ") + " hat SMARD noch keine Preise veröffentlicht."; } else gEl.hidden = true;
+  const lo = Math.min(0, d3.min(vals)), hi = d3.max(vals);
+  const tEnd = pq.t0 + qb * Q;
+  timeChart(document.getElementById("priceChart"), {
+    xDomain: [tStart, tEnd], yDomain: [lo, hi * 1.05], extraT: d3.range(T[N - 1] + H, tEnd + 1, H),
+    draw(g, x, y) {
+      const line = d3.line().defined(i => pq.values[i] != null).x(i => x(pq.t0 + i * Q)).y(i => y(pq.values[i])).curve(d3.curveStepAfter);
+      const area = d3.area().defined(i => pq.values[i] != null).x(i => x(pq.t0 + i * Q)).y0(y(Math.max(0, lo))).y1(i => y(pq.values[i])).curve(d3.curveStepAfter);
+      g.append("path").datum(qi).attr("fill", css("--c-wind")).attr("fill-opacity", 0.1).attr("d", area);
+      g.append("path").datum(qi).attr("fill", "none").attr("stroke", css("--c-wind")).attr("stroke-width", 2).attr("stroke-linejoin", "round").attr("d", line);
+      // now marker
+      if (today0 >= tStart && today0 <= tEnd + Q) { g.append("line").attr("x1", x(today0)).attr("x2", x(today0)).attr("y1", y.range()[1]).attr("y2", y.range()[0]).attr("stroke", css("--ink2")).attr("stroke-dasharray", "3 3"); g.append("text").attr("x", x(today0) + 4).attr("y", y.range()[1] + 10).text("jetzt"); }
+      gaps.forEach(([s, e]) => { const x0 = x(pq.t0 + s * Q), x1 = x(pq.t0 + e * Q + Q); g.append("rect").attr("x", x0).attr("width", x1 - x0).attr("y", y.range()[1]).attr("height", y.range()[0] - y.range()[1]).attr("fill", css("--wash")); g.append("text").attr("x", (x0 + x1) / 2).attr("y", (y.range()[0] + y.range()[1]) / 2).attr("text-anchor", "middle").text("keine Daten"); });
+    },
+    hover(t) { let i = Math.floor((t - pq.t0) / Q); i = Math.max(qa, Math.min(qb, i)); const v = pq.values[i]; const tq = pq.t0 + i * Q;
+      return { t: tq, title: fFull.format(tq) + "–" + fTime.format(tq + Q) + " Uhr", rows: [{ c: css("--c-wind"), v: v == null ? "–" : nf2.format(v), n: "€/MWh" }, { c: "transparent", v: v == null ? "–" : nf1.format(v / 10), n: "ct/kWh" }], dots: [{ v, c: css("--c-wind") }] }; }
+  });
+}
+
+/* ---------- Residuallast ---------- */
+function renderRes() {
+  const [a, b] = rangeIdx(); const idx = d3.range(a, b + 1);
+  const lg = document.getElementById("resLegend"); lg.textContent = "";
+  [["Netzlast", "--c-load"], ["Residuallast", "--c-resid"]].forEach(([n, c]) => { const s = document.createElement("span"); const i = document.createElement("i"); i.className = "line"; i.style.background = `var(${c})`; s.append(i, document.createTextNode(n)); lg.appendChild(s); });
+  const s2 = document.createElement("span"); const i2 = document.createElement("i"); i2.style.background = "var(--c-wind)"; i2.style.opacity = .25; s2.append(i2, document.createTextNode("gedeckt durch Wind & Solar")); lg.appendChild(s2);
+  const lo = Math.min(0, d3.min(idx, i => G.resid[i])), hi = d3.max(idx, i => G.load[i]);
+  timeChart(document.getElementById("resChart"), {
+    xDomain: [T[a], T[b]], yDomain: [lo, hi * 1.03], yFmt: v => nf0.format(v / 1000),
+    draw(g, x, y) {
+      g.append("path").datum(idx).attr("fill", css("--c-wind")).attr("fill-opacity", 0.16)
+        .attr("d", d3.area().defined(i => G.load[i] != null && G.resid[i] != null).x(i => x(T[i])).y0(i => y(G.resid[i])).y1(i => y(G.load[i])).curve(d3.curveMonotoneX));
+      [["load", "--c-load"], ["resid", "--c-resid"]].forEach(([k, c]) => g.append("path").datum(idx).attr("fill", "none").attr("stroke", css(c)).attr("stroke-width", 2).attr("stroke-linejoin", "round")
+        .attr("d", d3.line().defined(i => G[k][i] != null).x(i => x(T[i])).y(i => y(G[k][i])).curve(d3.curveMonotoneX)));
+    },
+    hover(t) { const i = nearestIdx(t, a, b); const ws = (G.load[i] || 0) - (G.resid[i] || 0);
+      return { t: T[i], title: fFull.format(T[i]) + " Uhr · GW", rows: [{ c: css("--c-load"), v: GW(G.load[i]), n: "Netzlast" }, { c: css("--c-resid"), v: GW(G.resid[i]), n: "Residuallast" }, { c: css("--c-wind"), v: GW(ws), n: "Wind & Solar" }, { c: "transparent", v: priceH[i] == null ? "–" : nf0.format(priceH[i]), n: "€/MWh Preis" }], dots: [{ v: G.load[i], c: css("--c-load") }, { v: G.resid[i], c: css("--c-resid") }] }; }
+  });
+}
+
+/* ---------- Handel ---------- */
+function renderTrade() {
+  const [a, b] = rangeIdx(); const idx = d3.range(a, b + 1);
+  const lo = Math.min(0, d3.min(idx, i => G.net[i])), hi = Math.max(0, d3.max(idx, i => G.net[i]));
+  timeChart(document.getElementById("tradeChart"), {
+    xDomain: [T[a], T[b] + H], yDomain: [lo * 1.05, hi * 1.05], yFmt: v => nf0.format(v / 1000), extraT: [T[b] + H],
+    draw(g, x, y) {
+      const bw = Math.max(1, x(T[a] + H) - x(T[a]) - (range > 48 ? 0.5 : 2));
+      g.selectAll("rect").data(idx.filter(i => G.net[i] != null)).join("rect")
+        .attr("x", i => x(T[i]) + (range > 48 ? 0 : 1)).attr("width", bw)
+        .attr("y", i => G.net[i] >= 0 ? y(G.net[i]) : y(0)).attr("height", i => Math.abs(y(G.net[i]) - y(0)))
+        .attr("rx", range > 48 ? 0 : 2).attr("fill", i => G.net[i] >= 0 ? css("--pos") : css("--neg"));
+    },
+    hover(t) { const i = nearestIdx(t - H / 2, a, b); const v = G.net[i];
+      return { t: T[i] + H / 2, title: fFull.format(T[i]) + "–" + fTime.format(T[i] + H) + " Uhr", rows: [{ c: v >= 0 ? css("--pos") : css("--neg"), v: GW(Math.abs(v)), n: v >= 0 ? "GW Nettoexport" : "GW Nettoimport" }, { c: "transparent", v: priceH[i] == null ? "–" : nf0.format(priceH[i]), n: "€/MWh Preis DE" }] }; }
+  });
+  // countries
+  const use24 = range === 24;
+  document.getElementById("ctySub").textContent = (use24 ? "Letzte 24 Stunden" : "Letzte 7 Tage") + ", Strommengen in GWh";
+  const rows = D.countries.map(c => ({ n: c[0], e: (use24 ? c[1] : c[3]) / 1000, i: (use24 ? c[2] : c[4]) / 1000 })).sort((p, q) => (q.e - q.i) - (p.e - p.i));
+  const el = document.getElementById("ctyChart"); el.textContent = "";
+  const W = el.clientWidth || 340, rowH = 26, m = { t: 6, r: 44, b: 22, l: 92 }; const Hh = m.t + m.b + rows.length * rowH;
+  const svg = d3.select(el).append("svg").attr("width", W).attr("height", Hh);
+  const mx = d3.max(rows, r => Math.max(r.e, r.i)) || 1;
+  const x = d3.scaleLinear().domain([-mx, mx]).nice().range([m.l, W - m.r]);
+  svg.append("g").attr("class", "grid").attr("transform", `translate(0,${Hh - m.b})`).call(d3.axisBottom(x).ticks(W < 500 ? 4 : 6).tickSize(-(Hh - m.t - m.b)).tickFormat(""));
+  svg.append("g").attr("class", "axis").attr("transform", `translate(0,${Hh - m.b})`).call(d3.axisBottom(x).ticks(W < 500 ? 4 : 6).tickFormat(v => nf0.format(Math.abs(v))).tickSize(0)).call(g => g.select("path").remove());
+  svg.append("line").attr("class", "base").attr("x1", x(0)).attr("x2", x(0)).attr("y1", m.t).attr("y2", Hh - m.b);
+  const tip = document.createElement("div"); tip.className = "ed-tip"; el.appendChild(tip);
+  rows.forEach((r, k) => { const yy = m.t + k * rowH;
+    svg.append("text").attr("x", m.l - 8).attr("y", yy + rowH / 2 + 4).attr("text-anchor", "end").style("fill", css("--ink2")).style("font-size", "12px").text(r.n);
+    const bh = 14, by = yy + (rowH - bh) / 2;
+    const ex = x(0), ew = x(r.e) - x(0), iw = x(0) - x(-r.i);
+    const p = (x0, w, left) => { if (w < 0.5) return ""; const rr = Math.min(4, w); return left ? `M${x0},${by}h${-(w - rr)}a${rr},${rr} 0 0 0 ${-rr},${rr}v${bh - 2 * rr}a${rr},${rr} 0 0 0 ${rr},${rr}h${w - rr}z` : `M${x0},${by}h${w - rr}a${rr},${rr} 0 0 1 ${rr},${rr}v${bh - 2 * rr}a${rr},${rr} 0 0 1 ${-rr},${rr}h${-(w - rr)}z`; };
+    svg.append("path").attr("d", p(ex + 1, ew - 1, false)).attr("fill", css("--pos"));
+    svg.append("path").attr("d", p(ex - 1, iw - 1, true)).attr("fill", css("--neg"));
+    const net = r.e - r.i;
+    svg.append("text").attr("x", W - 4).attr("y", yy + rowH / 2 + 4).attr("text-anchor", "end").style("fill", css("--ink2")).text((net >= 0 ? "+" : "−") + nf0.format(Math.abs(net)));
+    svg.append("rect").attr("x", 0).attr("y", yy).attr("width", W).attr("height", rowH).attr("fill", "transparent")
+      .on("pointermove pointerdown", ev => { tip.textContent = ""; const h = document.createElement("div"); h.className = "t"; h.textContent = r.n; tip.appendChild(h);
+        [[css("--pos"), nf1.format(r.e), "GWh Export"], [css("--neg"), nf1.format(r.i), "GWh Import"], ["transparent", (net >= 0 ? "+" : "−") + nf1.format(Math.abs(net)), "GWh netto"]].forEach(([c, v, n]) => { const d = document.createElement("div"); d.className = "r"; const i = document.createElement("i"); i.style.background = c; const b = document.createElement("b"); b.textContent = v; const s = document.createElement("span"); s.textContent = n; d.append(i, b, s); tip.appendChild(d); });
+        tip.style.opacity = 1; const [px] = d3.pointer(ev, el); let left = px + 12; if (left + tip.offsetWidth > W) left = px - tip.offsetWidth - 12; tip.style.left = Math.max(0, left) + "px"; tip.style.top = Math.max(0, yy - 10) + "px"; })
+      .on("pointerleave", () => tip.style.opacity = 0);
+  });
+  svg.append("text").attr("x", W - 4).attr("y", Hh - 6).attr("text-anchor", "end").text("netto");
+  const tb = document.getElementById("ctyTable"); tb.innerHTML = "<tr><th>Land</th><th>Export</th><th>Import</th><th>Netto</th></tr>";
+  rows.forEach(r => { const t = tb.insertRow(); t.insertCell().textContent = r.n; t.insertCell().textContent = nf1.format(r.e); t.insertCell().textContent = nf1.format(r.i); t.insertCell().textContent = (r.e - r.i >= 0 ? "+" : "−") + nf1.format(Math.abs(r.e - r.i)); });
+}
+
+/* ---------- Merit Order ---------- */
+const TECH = [
+  { k: "braun", name: "Braunkohle", cap: 15000, eta: 0.38, ef: 0.40, vom: 4, fuel: () => 4, c: "--c-braun" },
+  { k: "stein", name: "Steinkohle", cap: 12000, eta: 0.40, ef: 0.34, vom: 4, fuel: p => p.coal, c: "--c-stein" },
+  { k: "gud", name: "Erdgas GuD (modern)", cap: 14000, eta: 0.56, ef: 0.20, vom: 2, fuel: p => p.gas, c: "--c-gas" },
+  { k: "gasalt", name: "Erdgas (ältere Anlagen)", cap: 10000, eta: 0.42, ef: 0.20, vom: 3, fuel: p => p.gas, c: "--c-gas", light: true },
+  { k: "gt", name: "Gasturbinen & Öl", cap: 6000, eta: 0.34, ef: 0.21, vom: 3, fuel: p => p.gas * 1.05, c: "--c-sonst" }
+];
+function params() { return { gas: +document.getElementById("pGas").value, co2: +document.getElementById("pCo2").value, coal: +document.getElementById("pCoal").value }; }
+function mcs(p) { return TECH.map(t => ({ ...t, mc: t.fuel(p) / t.eta + p.co2 * t.ef / t.eta + t.vom })); }
+function estimate(price, techs) {
+  if (price == null) return null;
+  if (price <= 0) return { k: "ee", name: "Erneuerbare (Überschuss)", why: "Preis ≤ 0: Wind und Sonne decken mehr als den Bedarf." };
+  const cheapest = techs[0].mc;
+  if (price < cheapest * 0.6) return { k: "ee", name: "Erneuerbare, Speicher oder Import", why: "Preis klar unter den Kosten von Kohle und Gas." };
+  const top = techs[techs.length - 1].mc;
+  if (price > top * 1.15) return { k: "scarce", name: "Knappheit", why: "Preis über den Kosten aller Kraftwerke: Speicher, Importe oder Nachfrage setzen den Preis." };
+  let best = techs[0]; techs.forEach(t => { if (Math.abs(t.mc - price) < Math.abs(best.mc - price)) best = t; });
+  return { k: best.k, name: best.name, why: "Börsenpreis " + nf0.format(price) + " €/MWh liegt am nächsten an den geschätzten Grenzkosten von " + nf0.format(best.mc) + " €/MWh." };
+}
+const EST_COL = k => k === "ee" ? "--c-wind" : k === "scarce" ? "--ink" : TECH.find(t => t.k === k).c;
+function renderMO() {
+  const p = params(); const techs = mcs(p).sort((a, b) => a.mc - b.mc);
+  document.getElementById("pGasO").textContent = nf0.format(p.gas) + " €/MWh";
+  document.getElementById("pCo2O").textContent = nf0.format(p.co2) + " €/t";
+  document.getElementById("pCoalO").textContent = nf1.format(p.coal) + " €/MWh";
+  const tb = document.getElementById("moTable"); tb.innerHTML = "<tr><th>Kraftwerkstyp</th><th>Kapazität</th><th>Grenzkosten</th></tr>";
+  techs.forEach(t => { const r = tb.insertRow(); r.insertCell().textContent = t.name; r.insertCell().textContent = nf0.format(t.cap / 1000) + " GW"; r.insertCell().textContent = nf0.format(t.mc) + " €/MWh"; });
+  // strip over 7 days
+  const strip = document.getElementById("moStrip"); strip.textContent = "";
+  const counts = {};
+  T.forEach((t, i) => { const e = estimate(priceH[i], techs); const d = document.createElement("div");
+    if (e) { d.style.background = `var(${EST_COL(e.k)})`; if (TECH.find(x => x.k === e.k && x.light)) d.style.opacity = .55; counts[e.name] = (counts[e.name] || 0) + 1; d.title = fFull.format(t) + " Uhr: " + e.name; }
+    else { d.style.background = "var(--wash)"; d.title = fFull.format(t) + " Uhr: kein Preis"; }
+    d.style.cursor = "pointer"; d.addEventListener("click", () => { document.getElementById("moHour").value = i; renderMOHour(); });
+    strip.appendChild(d); });
+  strip.setAttribute("aria-label", Object.entries(counts).map(([n, c]) => n + ": " + c + " Stunden").join(", "));
+  const ax = document.getElementById("moStripAxis"); ax.textContent = ""; const W = ax.clientWidth || 340;
+  const sx = d3.scaleLinear().domain([0, N]).range([0, W]); const svg = d3.select(ax).append("svg").attr("width", W).attr("height", 18);
+  let dn = 0; T.forEach((t, i) => { if (berlinHour(t) === 0 && i < N - 6) { if (W >= 560 || dn % 2 === 0) svg.append("text").attr("x", sx(i) + 2).attr("y", 12).text(W < 560 ? fShort.format(t) : fDay.format(t).replace(".,", ",")); dn++; } });
+  const lg = document.getElementById("moStripLegend"); lg.textContent = "";
+  Object.entries(counts).sort((a, b) => b[1] - a[1]).forEach(([n, c]) => { const k = n.startsWith("Erneuer") ? "ee" : n === "Knappheit" ? "scarce" : TECH.find(t => t.name === n).k; const s = document.createElement("span"); const i = document.createElement("i"); i.style.background = `var(${EST_COL(k)})`; if (TECH.find(x => x.k === k && x.light)) i.style.opacity = .55; s.append(i, document.createTextNode(n + " · " + c + " h")); lg.appendChild(s); });
+  if (T.some((t, i) => priceH[i] == null)) { const s = document.createElement("span"); const i = document.createElement("i"); i.style.background = "var(--wash)"; i.style.border = "1px solid var(--ring)"; s.append(i, document.createTextNode("kein Preis veröffentlicht")); lg.appendChild(s); }
+  renderMOHour();
+}
+function renderMOHour() {
+  const p = params(); const techs = mcs(p).sort((a, b) => a.mc - b.mc);
+  const i = +document.getElementById("moHour").value; const price = priceH[i];
+  document.getElementById("moHourOut").textContent = fFull.format(T[i]) + " Uhr";
+  const e = estimate(price, techs);
+  document.getElementById("moEst").textContent = e ? e.name : "Kein Preis veröffentlicht";
+  document.getElementById("moEstWhy").textContent = e ? e.why : "Für diese Stunde hat SMARD noch keinen Day-Ahead-Preis.";
+  // chart
+  const el = document.getElementById("moChart"); el.textContent = "";
+  const W = el.clientWidth || 320, Hh = W < 500 ? 240 : 280, m = { t: 12, r: 8, b: 30, l: 40 };
+  const eeParts = [["Wind", G.wind[i], "--c-wind"], ["Photovoltaik", G.pv[i], "--c-pv"], ["Wasser & sonst. EE", G.wasser[i], "--c-wasser"], ["Biomasse", G.bio[i], "--c-bio"]];
+  const eeSum = d3.sum(eeParts, d => d[1] || 0);
+  const blocks = []; let cum = 0;
+  eeParts.forEach(([n, v, c]) => { blocks.push({ n, x0: cum, x1: cum + (v || 0), mc: 0, c }); cum += v || 0; });
+  techs.forEach(t => { blocks.push({ n: t.name, x0: cum, x1: cum + t.cap, mc: t.mc, c: t.c, light: t.light, k: t.k }); cum += t.cap; });
+  const genDE = G.total[i];
+  const ymax = Math.max(d3.max(techs, t => t.mc), price || 0) * 1.1;
+  const svg = d3.select(el).append("svg").attr("width", W).attr("height", Hh);
+  const x = d3.scaleLinear().domain([0, cum]).range([m.l, W - m.r]);
+  const y = d3.scaleLinear().domain([Math.min(0, price || 0), ymax]).nice().range([Hh - m.b, m.t]);
+  svg.append("g").attr("class", "grid").attr("transform", `translate(${m.l},0)`).call(d3.axisLeft(y).ticks(5).tickSize(-(W - m.l - m.r)).tickFormat(""));
+  svg.append("g").attr("transform", `translate(${m.l - 6},0)`).call(d3.axisLeft(y).ticks(5).tickSize(0).tickFormat(v => nf0.format(v))).call(g => g.select("path").remove());
+  svg.append("g").attr("class", "axis").attr("transform", `translate(0,${Hh - m.b})`).call(d3.axisBottom(x).ticks(W < 500 ? 4 : 7).tickFormat(v => nf0.format(v / 1000)).tickSize(4));
+  svg.append("text").attr("x", W - m.r).attr("y", Hh - 2).attr("text-anchor", "end").text("Leistung in GW →");
+  svg.append("text").attr("x", m.l).attr("y", m.t - 2).text("€/MWh");
+  const y0 = y(0);
+  blocks.forEach(b => { const w = x(b.x1) - x(b.x0) - 2; if (w <= 0) return;
+    const top = b.mc > 0 ? y(b.mc) : y0 - 4; const h = y0 - top;
+    const isEst = e && b.k === e.k;
+    svg.append("path").attr("d", `M${x(b.x0) + 1},${y0}v${-(h - 4)}a4,4 0 0 1 4,-4h${Math.max(0, w - 8)}a4,4 0 0 1 4,4v${h - 4}z`)
+      .attr("fill", css(b.c)).attr("fill-opacity", b.light ? 0.55 : (e && e.k !== "ee" && e.k !== "scarce" && !isEst && b.mc > 0 ? 0.45 : 1))
+      .append("title").text(b.n + ": " + nf1.format((b.x1 - b.x0) / 1000) + " GW" + (b.mc > 0 ? ", ca. " + nf0.format(b.mc) + " €/MWh" : ", Grenzkosten ≈ 0"));
+  });
+  if (price != null) { svg.append("line").attr("x1", m.l).attr("x2", W - m.r).attr("y1", y(price)).attr("y2", y(price)).attr("stroke", css("--ink")).attr("stroke-width", 1.5).attr("stroke-dasharray", "5 4");
+    svg.append("text").attr("x", W - m.r).attr("y", y(price) - 5).attr("text-anchor", "end").style("fill", css("--ink")).style("font-weight", 600).text("Börsenpreis " + nf0.format(price)); }
+  svg.append("line").attr("x1", x(genDE)).attr("x2", x(genDE)).attr("y1", m.t).attr("y2", Hh - m.b).attr("stroke", css("--ink2")).attr("stroke-width", 1.5);
+  const lx = x(genDE); const lab = svg.append("text").attr("y", m.t + 22).style("fill", css("--ink2")).text("Erzeugung DE " + GW(genDE) + " GW");
+  const lw = lab.node().getComputedTextLength(); lab.attr("x", lx + 4 + lw > W - m.r ? lx - 4 - lw : lx + 4);
+  const lg = document.getElementById("moLegend"); lg.textContent = "";
+  const items = [["Erneuerbare (Grenzkosten ≈ 0)", "--c-wind"]].concat(TECH.map(t => [t.name, t.c, t.light]));
+  items.forEach(([n, c, l]) => { const s = document.createElement("span"); const ii = document.createElement("i"); ii.style.background = `var(${c})`; if (l) ii.style.opacity = .55; s.append(ii, document.createTextNode(n)); lg.appendChild(s); });
+  const s1 = document.createElement("span"); const i1 = document.createElement("i"); i1.className = "dash"; i1.style.borderColor = "var(--ink)"; s1.append(i1, document.createTextNode("Börsenpreis")); lg.appendChild(s1);
+  const s2 = document.createElement("span"); const i2 = document.createElement("i"); i2.className = "line"; i2.style.background = "var(--ink2)"; s2.append(i2, document.createTextNode("tatsächliche Erzeugung in DE")); lg.appendChild(s2);
+}
+
+/* ---------- tabs, range, resize ---------- */
+const RENDER = { ueberblick: renderOverview, erzeugung: renderGen, preise: renderPrice, residuallast: renderRes, handel: renderTrade, meritorder: renderMO };
+function setTab(t) {
+  if (!RENDER[t]) t = "ueberblick"; tab = t;
+  document.querySelectorAll(".ed-tab").forEach(b => b.setAttribute("aria-selected", b.dataset.tab === t));
+  document.querySelectorAll("[data-panel]").forEach(p => p.hidden = p.dataset.panel !== t);
+  document.getElementById("rangeRow").hidden = !["erzeugung", "preise", "residuallast", "handel"].includes(t);
+  if (D) RENDER[t]();
+  try { localStorage.setItem("ed-tab", t); } catch (e) {}
+}
+document.getElementById("tabs").addEventListener("click", ev => { const b = ev.target.closest(".ed-tab"); if (!b) return; if (location.hash.slice(1) !== b.dataset.tab) location.hash = b.dataset.tab; else setTab(b.dataset.tab); });
+window.addEventListener("hashchange", () => setTab(location.hash.slice(1)));
+document.getElementById("range").addEventListener("click", ev => { const b = ev.target.closest("button"); if (!b) return; range = +b.dataset.r;
+  document.querySelectorAll("#range button").forEach(x => x.setAttribute("aria-pressed", x === b)); if (D) RENDER[tab](); });
+["pGas", "pCo2", "pCoal"].forEach(id => document.getElementById(id).addEventListener("input", () => renderMO()));
+document.getElementById("moHour").addEventListener("input", renderMOHour);
+document.getElementById("reload").addEventListener("click", () => { try { localStorage.removeItem("ed-cache"); } catch (e) {} location.reload(); });
+let rz; let lastW = window.innerWidth; window.addEventListener("resize", () => { if (window.innerWidth === lastW) return; lastW = window.innerWidth; clearTimeout(rz); rz = setTimeout(() => D && RENDER[tab](), 150); });
+if (window.matchMedia) window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => D && RENDER[tab]());
+
+/* ---------- Daten live von SMARD laden ---------- */
+const SMARD = "https://www.smard.de/app/chart_data/";
+const HOURLY_IDS = { braunkohle: 1223, steinkohle: 4069, erdgas: 4071, sonst_konv: 1227, pumpspeicher: 4070, wind_on: 4067, wind_off: 1225, pv: 4068, biomasse: 4066, wasser: 1226, sonst_ee: 1228, netzlast: 410, residuallast: 4359, nettoexport: 4963 };
+const COUNTRY_IDS = { "Dänemark": [4736, 4880], "Frankreich": [4737, 4881], "Luxemburg": [4738, 4882], "Niederlande": [4739, 4883], "Österreich": [4740, 4884], "Polen": [4741, 4885], "Schweden": [4742, 4886], "Schweiz": [4743, 4887], "Tschechien": [4744, 4888], "Norwegen": [4988, 4990], "Belgien": [4992, 4994] };
+async function getJSON(u) { const r = await fetch(u, { cache: "no-store" }); if (!r.ok) throw new Error(r.status + " " + u); return r.json(); }
+async function weeks(id, region, res, stamps) {
+  const m = new Map();
+  const parts = await Promise.all(stamps.map(t => getJSON(`${SMARD}${id}/${region}/${id}_${region}_${res}_${t}.json`).then(d => d.series).catch(() => [])));
+  parts.forEach(p => p.forEach(([t, v]) => m.set(t, v)));
+  return m;
+}
+async function loadLive() {
+  const idxH = (await getJSON(`${SMARD}410/DE/index_hour.json`)).timestamps.slice(-3);
+  const idxQ = (await getJSON(`${SMARD}4169/DE-LU/index_quarterhour.json`)).timestamps.slice(-3);
+  const keys = Object.keys(HOURLY_IDS);
+  const [maps, pq, cty] = await Promise.all([
+    Promise.all(keys.map(k => weeks(HOURLY_IDS[k], "DE", "hour", idxH))),
+    weeks(4169, "DE-LU", "quarterhour", idxQ),
+    Promise.all(Object.values(COUNTRY_IDS).map(([e, i]) => Promise.all([weeks(e, "DE", "hour", idxH), weeks(i, "DE", "hour", idxH)])))
+  ]);
+  const M = {}; keys.forEach((k, j) => M[k] = maps[j]);
+  let last = 0; M.netzlast.forEach((v, t) => { if (v != null && t > last) last = t; });
+  if (!last) throw new Error("keine Netzlast-Daten");
+  const n = 8 * 24 + 1, t0 = last - (n - 1) * H;
+  const hourly = {}; keys.forEach(k => { hourly[k] = d3.range(n).map(i => { const v = M[k].get(t0 + i * H); return v == null ? null : Math.round(v); }); });
+  let lastq = 0; pq.forEach((v, t) => { if (v != null && t > lastq) lastq = t; });
+  const nq = Math.round((lastq - t0) / Q) + 1;
+  const values = d3.range(nq).map(i => { const v = pq.get(t0 + i * Q); return v == null ? null : Math.round(v * 100) / 100; });
+  const countries = Object.keys(COUNTRY_IDS).map((name, j) => { const [me, mi] = cty[j]; let e24 = 0, i24 = 0, e7 = 0, i7 = 0;
+    for (let k = 0; k < n - 1; k++) { const t = t0 + (k + 1) * H; const ev = me.get(t) || 0, iv = mi.get(t) || 0; if (k >= n - 1 - 168) { e7 += ev; i7 += iv; } if (k >= n - 1 - 24) { e24 += ev; i24 += iv; } }
+    return [name, Math.round(e24), Math.round(-i24), Math.round(e7), Math.round(-i7)]; });
+  return { stand: new Date().toISOString(), live: true, t0, n, hourly, price_qh: { t0, step: Q, values }, countries };
+}
+function start(d, note) {
+  prep(d);
+  const geladen = d.live ? "Live von SMARD geladen um " + fTime.format(new Date(d.stand)) + " Uhr" : (note || "Gespeicherter Datenstand");
+  document.getElementById("stand").textContent = geladen + " · Erzeugung bis " + fFull.format(T[N - 1] + H) + " Uhr · Preise bis " + fFull.format(d.price_qh.t0 + d.price_qh.values.length * Q) + " Uhr";
+  let hi = N - 1; while (hi > 0 && priceH[hi] == null) hi--; document.getElementById("moHour").value = hi; document.getElementById("moHour").max = N - 1;
+  let st = location.hash.slice(1); if (!RENDER[st]) { try { st = localStorage.getItem("ed-tab") || "ueberblick"; } catch (e) { st = "ueberblick"; } }
+  setTab(st);
+}
+(async () => {
+  document.getElementById("stand").textContent = "Lade aktuelle Daten von SMARD …";
+  let cached = null; try { cached = JSON.parse(localStorage.getItem("ed-cache") || "null"); } catch (e) {}
+  if (cached && Date.now() - Date.parse(cached.stand) < 20 * 60 * 1000) { start(cached); return; }
+  if (cached) start(cached); // sofort etwas zeigen, dann aktualisieren
+  try {
+    const d = await loadLive();
+    try { localStorage.setItem("ed-cache", JSON.stringify(d)); } catch (e) {}
+    start(d);
+  } catch (err) {
+    console.error(err);
+    if (cached) { document.getElementById("stand").textContent = "SMARD gerade nicht erreichbar – zeige Daten von " + fFull.format(new Date(cached.stand)) + " Uhr"; return; }
+    try { const d = await getJSON("data.json"); start(d, "SMARD gerade nicht erreichbar – gespeicherter Stand"); }
+    catch (e2) { document.getElementById("stand").textContent = "Daten konnten nicht geladen werden. Bitte später erneut versuchen."; }
+  }
+})();
+})();
+</script>
+</body>
+</html>
