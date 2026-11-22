@@ -180,11 +180,8 @@ def run(cmd):
 
 
 def download(url, path):
-    with requests.get(url, stream=True, timeout=120, headers=UA) as r:
-        r.raise_for_status()
-        with open(path, "wb") as f:
-            for ch in r.iter_content(1 << 20):
-                f.write(ch)
+    # curl -4: Auf den GitHub-Servern scheitert IPv6 zu Geofabrik („Network is unreachable“)
+    run(["curl", "-4", "-fsSL", "--retry", "4", "--retry-delay", "15", "-A", UA["User-Agent"], "-o", path, url])
     log(f"   geladen {url}: {os.path.getsize(path) / 1e9:.2f} GB")
 
 
@@ -579,6 +576,16 @@ RD_FIX = {
     "waldeck": (51.18, 9.07, "Pumpspeicherwerk Waldeck"),
     "goldisthal": (50.51, 11.00, "Pumpspeicherwerk Goldisthal"),
 }
+# Sammelmeldungen ganzer Verteilnetzgebiete (vor allem abgeregelte Wind- und Solaranlagen): nur ungefähre Lage
+RD_REGION = [
+    (r"^50h mns cr", 51.35, 12.6, "Netzgebiet MITNETZ Strom (Sachsen, Sachsen-Anhalt, Süd-Brandenburg)"),
+    (r"^50h edis cr", 53.1, 13.4, "Netzgebiet E.DIS (Brandenburg, Mecklenburg-Vorpommern)"),
+    (r"^50h ten cr", 50.9, 11.0, "Netzgebiet TEN (Thüringen)"),
+    (r"^50h wema cr", 53.6, 11.5, "Netzgebiet WEMAG (Westmecklenburg)"),
+    (r"^50h ava cr", 52.0, 11.6, "Netzgebiet Avacon (Sachsen-Anhalt)"),
+    (r"^amp westnetz emsland", 52.7, 7.35, "Netzgebiet Westnetz Emsland"),
+    (r"^amp westnetz sauerland", 51.25, 8.2, "Netzgebiet Westnetz Sauerland"),
+]
 RD_STOP = ST_STOP | set("""block blk gt dt gud gtkw standort gesamt netzreservekraftwerk reservekraftwerk reservekw reserve kapres sysrel bnbm
 cluster ava shn 50h amp cr sonstige konventionell kwk owp wp pv ee eeg pool sw kmw kraftwerke hkwm infra ikw
 btb bhkw pth guds dampf hkw heizkraftwerk modul anlage anlagen kessel turbine ost west nord sued mitte""".split())
@@ -593,6 +600,10 @@ def rd_locate(name, energy, idx, cache):
     if name in cache:
         return cache[name]
     f = fold(name)
+    for rx, la, lo, nm in RD_REGION:
+        if re.search(rx, f):
+            cache[name] = (la, lo, nm, 1)
+            return cache[name]
     for k, v in RD_FIX.items():
         if k in f:
             cache[name] = v
@@ -679,7 +690,7 @@ def update_redispatch(days, idx, prev):
                 unmatched[p["name"]] = unmatched.get(p["name"], 0) + p["up"] + p["down"]
             plants.append({"name": p["name"], "pe": p["pe"], "uenb": p["uenb"], "up": round(p["up"]), "down": round(p["down"]),
                            "maxmw": round(p["maxmw"]), "n": p["n"], "grund": sorted(p["grund"]),
-                           "geo": [loc[0], loc[1], loc[2]] if loc else None})
+                           "geo": [loc[0], loc[1], loc[2], loc[3] if len(loc) > 3 else 0] if loc else None})
         plants.sort(key=lambda x: -(x["up"] + x["down"]))
         out[dd] = {"plants": plants, "tot": {k: round(v) for k, v in D["tot"].items()}, "pe": {k: round(v) for k, v in D["pe"].items()}}
     log(f"  Redispatch {d_from}–{d_to}: {nrows} Maßnahmen, Tage mit Daten: {sorted(out)}")
