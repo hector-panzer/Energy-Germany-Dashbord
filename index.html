@@ -11,6 +11,7 @@
 <link rel="icon" href="icon-192.png">
 <title>Energie-Dashboard Deutschland</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script src="netze.js" defer></script>
 <style>
 .ed {
   color-scheme: light;
@@ -118,6 +119,83 @@ html, body { margin: 0; }
 .ed a { color: inherit; }
 .ed .strip { display: flex; height: 18px; gap: 0; border-radius: 4px; overflow: hidden; margin: 6px 0 2px; }
 .ed .strip div { flex: 1 1 0; }
+/* ---------- Info-Knopf ---------- */
+.ed .ed-i { display: inline-flex; align-items: center; justify-content: center; width: 17px; height: 17px; margin-left: 5px; padding: 0; border-radius: 50%; border: 1px solid var(--axis); background: transparent; color: var(--ink2); font: italic 600 11px/1 Georgia, "Times New Roman", serif; cursor: pointer; vertical-align: 1px; flex: 0 0 auto; }
+.ed .ed-i:hover, .ed .ed-i[aria-expanded="true"] { background: var(--ink); color: var(--page); border-color: var(--ink); }
+.ed .ed-i:focus-visible { outline: 2px solid var(--c-wind); outline-offset: 1px; }
+.ed-pop { position: fixed; z-index: 2000; background: var(--surface); color: var(--ink); border: 1px solid var(--ring); border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,.18); padding: 12px 34px 10px 14px; font-size: 13.5px; line-height: 1.5; max-height: 70vh; overflow: auto; }
+.ed-pop p { margin: 6px 0; color: var(--ink2); }
+.ed-pop b { color: var(--ink); }
+.ed-pop .ed-pop-x { position: absolute; top: 6px; right: 6px; width: 24px; height: 24px; border: 0; border-radius: 6px; background: transparent; color: var(--ink2); font-size: 18px; line-height: 1; cursor: pointer; }
+.ed-pop .ed-pop-x:hover { background: var(--wash); }
+/* ---------- Netze ---------- */
+.nz-top { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 8px 14px; margin-bottom: 10px; }
+.nz-top h2 { display: flex; align-items: center; }
+#nzDays { max-width: 100%; overflow-x: auto; scrollbar-width: none; }
+#nzDays button { white-space: nowrap; }
+.nz-layers { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+.nz-chip { display: inline-flex; align-items: center; border: 1px solid var(--ring); background: var(--surface); border-radius: 999px; padding: 4px 8px 4px 10px; font-size: 13px; color: var(--ink2); }
+.nz-chip label { display: inline-flex; align-items: center; gap: 4px; cursor: pointer; }
+.nz-chip label.busy { opacity: .5; }
+.nz-chip input { accent-color: var(--ink); margin: 0; }
+.nz-grid { display: grid; gap: 12px; }
+@media (min-width: 820px) { .nz-grid { grid-template-columns: minmax(0, 1.65fr) minmax(0, 1fr); } }
+.nz-mapwrap { position: relative; }
+#nzMap { height: 440px; border-radius: 10px; overflow: hidden; background: var(--wash); border: 1px solid var(--ring); }
+@media (min-width: 820px) { #nzMap { height: 560px; } }
+.nz-legend { display: flex; flex-wrap: wrap; gap: 4px 12px; margin-top: 8px; font-size: 12.5px; color: var(--ink2); }
+.nz-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.nz-legend i.ln { width: 18px; height: 0; display: inline-block; }
+.nz-legend i.dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; opacity: .75; }
+.nz-detail { background: var(--wash); border-radius: 10px; padding: 12px; font-size: 13.5px; min-height: 120px; align-self: start; }
+.nz-detail h3 { font-size: 16px; margin: 2px 0 8px; font-weight: 620; line-height: 1.3; word-break: break-word; }
+.nz-cat { color: var(--ink2); font-size: 12px; text-transform: uppercase; letter-spacing: .04em; display: flex; align-items: center; }
+.nz-sub2 { color: var(--ink2); font-size: 12.5px; font-weight: 600; margin: 10px 0 4px; display: flex; align-items: center; }
+.nz-kv { display: flex; justify-content: space-between; gap: 10px; padding: 4px 0; border-bottom: 1px solid var(--grid); }
+.nz-kv .k { color: var(--ink2); display: inline-flex; align-items: center; }
+.nz-kv b { font-weight: 600; text-align: right; font-variant-numeric: tabular-nums; }
+.nz-hint { color: var(--ink2); }
+.nz-strip { display: flex; height: 14px; gap: 1px; margin: 6px 0 2px; }
+.nz-strip i { flex: 1 1 0; background: var(--grid); border-radius: 1px; }
+.nz-strip-ax { display: flex; justify-content: space-between; color: var(--muted); font-size: 11px; }
+.nz-cap .bar, .nz-use .bar { display: flex; height: 12px; border-radius: 4px; overflow: hidden; background: var(--grid); margin: 4px 0; }
+.nz-use { margin: 6px 0; }
+.nz-use .t { display: flex; justify-content: space-between; gap: 8px; font-size: 12.5px; color: var(--ink2); }
+.nz-use .t b { color: var(--ink); font-variant-numeric: tabular-nums; }
+.nz-list { display: flex; flex-direction: column; }
+.nz-row { display: grid; grid-template-columns: minmax(0, 1fr) 30% 64px; gap: 10px; align-items: center; text-align: left; background: transparent; border: 0; border-bottom: 1px solid var(--grid); padding: 7px 2px; font: inherit; color: var(--ink); cursor: pointer; }
+.nz-row:hover { background: var(--wash); }
+.nz-row .nm { display: flex; flex-direction: column; min-width: 0; }
+.nz-row .nm span { font-size: 13.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.nz-row .nm small { color: var(--muted); font-size: 11.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.nz-row .bar { height: 10px; background: var(--grid); border-radius: 3px; overflow: hidden; position: relative; }
+.nz-row .bar > div { height: 100%; border-radius: 3px; }
+.nz-row .bar.two > div { position: absolute; top: 0; }
+.nz-row .bar.two .d { right: 50%; background: var(--neg); border-radius: 3px 0 0 3px; }
+.nz-row .bar.two .u { left: 50%; background: var(--pos); border-radius: 0 3px 3px 0; }
+.nz-row b { text-align: right; font-variant-numeric: tabular-nums; font-size: 13px; }
+.nz-bhead, .nz-brow { display: grid; grid-template-columns: minmax(70px, 1fr) minmax(0, 1.3fr) 92px minmax(0, 1.2fr); gap: 10px; align-items: center; }
+.nz-bhead { font-size: 12px; color: var(--ink2); padding-bottom: 4px; border-bottom: 1px solid var(--grid); }
+.nz-bhead span { display: inline-flex; align-items: center; }
+.nz-brow { width: 100%; text-align: left; background: transparent; border: 0; border-bottom: 1px solid var(--grid); padding: 7px 2px; font: inherit; font-size: 13.5px; color: var(--ink); cursor: pointer; }
+.nz-brow:hover { background: var(--wash); }
+.nz-brow .net, .nz-brow .u { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.nz-brow .track { position: relative; flex: 1 1 auto; height: 10px; background: var(--grid); border-radius: 3px; overflow: hidden; }
+.nz-brow .net .track::after { content: ""; position: absolute; left: 50%; top: -2px; bottom: -2px; width: 1px; background: var(--axis); }
+.nz-brow .net .track i { position: absolute; top: 0; bottom: 0; }
+.nz-brow .u .track i { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 3px; }
+.nz-brow b { font-variant-numeric: tabular-nums; min-width: 34px; text-align: right; font-weight: 600; }
+.nz-brow small { color: var(--ink2); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.nz-brow .p { white-space: nowrap; }
+@media (max-width: 560px) { .nz-bhead, .nz-brow { grid-template-columns: 64px minmax(0, 1fr) 70px minmax(0, .9fr); gap: 6px; font-size: 12.5px; } .nz-brow .u small { display: none; } .nz-row { grid-template-columns: minmax(0, 1fr) 26% 54px; } }
+.ed .leaflet-container { font: inherit; background: var(--wash); }
+.ed .leaflet-control-attribution { font-size: 10px; background: color-mix(in srgb, var(--surface) 80%, transparent); color: var(--ink2); }
+.ed .leaflet-control-attribution a { color: var(--ink2); }
+.ed .leaflet-bar a { background: var(--surface); color: var(--ink); border-color: var(--grid); }
+.ed .leaflet-tooltip { background: var(--surface); color: var(--ink); border: 1px solid var(--ring); box-shadow: 0 4px 14px rgba(0,0,0,.15); font-size: 12px; }
+.ed .leaflet-tooltip-top:before { border-top-color: var(--surface); }
+.nz-cty { background: var(--surface); border: 1px solid var(--ring); border-radius: 8px; padding: 2px 6px; white-space: nowrap; font-size: 11.5px; color: var(--ink2); box-shadow: 0 2px 8px rgba(0,0,0,.12); transform: translate(-50%, -50%); display: inline-flex; gap: 5px; cursor: pointer; }
+.nz-cty b { color: var(--ink); font-weight: 650; }
 </style>
 </head>
 <body>
@@ -138,6 +216,7 @@ html, body { margin: 0; }
   <button class="ed-tab" role="tab" data-tab="residuallast">Residuallast</button>
   <button class="ed-tab" role="tab" data-tab="handel">Import/Export</button>
   <button class="ed-tab" role="tab" data-tab="meritorder">Merit Order</button>
+  <button class="ed-tab" role="tab" data-tab="netze">Netze</button>
 </nav>
 
 <div class="ed-row" id="rangeRow">
@@ -268,6 +347,41 @@ html, body { margin: 0; }
       <p class="muted">Startwerte: Gas und CO₂ etwa auf dem Niveau von Mitte November 2026, Kohle grob geschätzt. Kapazitäten sind gerundete Annahmen für Deutschland. Echte Gebote sind nicht öffentlich, der Preis entsteht europaweit gekoppelt, und Speicher, Importe oder flexible Verbraucher können ihn ebenfalls setzen. Die Schätzung ist deshalb ein Lernmodell, kein Messwert.</p>
     </div>
   </div>
+</section>
+
+
+<!-- NETZE -->
+<section id="p-netze" data-panel="netze" hidden>
+  <div class="ed-card" id="nzMapCard">
+    <div class="nz-top">
+      <div><h2>Stromnetz und Engpässe <button type="button" class="ed-i" data-info="karte" aria-label="Erklärung: Karte">i</button></h2><p class="sub" id="nzSub">Lade …</p></div>
+      <div class="ed-seg" id="nzDays"></div>
+    </div>
+    <div class="nz-layers" id="nzLayers"></div>
+    <div class="nz-grid">
+      <div class="nz-mapwrap"><div id="nzMap" role="region" aria-label="Karte des Stromnetzes"></div><div class="nz-legend" id="nzLegend"></div></div>
+      <div class="nz-detail" id="nzDetail" aria-live="polite"></div>
+    </div>
+  </div>
+  <div class="ed-tiles" id="nzTiles"></div>
+  <div class="ed-card">
+    <h2 style="display:flex;align-items:center">Grenzen: Fluss, Preis und Kapazität <button type="button" class="ed-i" data-info="maxbex" aria-label="Erklärung: Kapazität">i</button></h2>
+    <p class="sub">Strom zwischen Deutschland und seinen Nachbarn am gewählten Tag</p>
+    <div id="nzBorders" style="margin-top:8px"></div>
+  </div>
+  <div class="two">
+    <div class="ed-card">
+      <h2 style="display:flex;align-items:center">Bindende Engpässe <button type="button" class="ed-i" data-info="core" aria-label="Erklärung: Region Core">i</button></h2>
+      <p class="sub">Netzelemente, die den Handel in Europa begrenzt haben, nach Schattenpreis <button type="button" class="ed-i" data-info="schatten" aria-label="Erklärung: Schattenpreis">i</button></p>
+      <div id="nzCnecs" style="margin-top:6px"></div>
+    </div>
+    <div class="ed-card">
+      <h2 style="display:flex;align-items:center">Redispatch <button type="button" class="ed-i" data-info="redispatch" aria-label="Erklärung: Redispatch">i</button></h2>
+      <p class="sub">Eingriffe der Netzbetreiber in Deutschland, um Leitungen zu entlasten</p>
+      <div id="nzRd" style="margin-top:6px"></div>
+    </div>
+  </div>
+  <p class="muted">Quellen: Netzkarte © OpenStreetMap-Mitwirkende (ODbL), Kartenhintergrund © CARTO; Engpässe und Grenzkapazitäten: JAO Publication Tool (Region Core); Redispatch: netztransparenz.de (Übertragungsnetzbetreiber); Grenzflüsse und Preise: SMARD.de. Die Netzdaten werden einmal täglich aktualisiert.</p>
 </section>
 
 <p class="muted" style="margin-top:18px"><button id="reload" class="ed-tab" style="font-size:13px;padding:5px 11px">Neu laden</button></p>
@@ -679,13 +793,13 @@ function renderMOHour() {
 }
 
 /* ---------- tabs, range, resize ---------- */
-const RENDER = { ueberblick: renderOverview, erzeugung: renderGen, preise: renderPrice, residuallast: renderRes, handel: renderTrade, meritorder: renderMO };
+const RENDER = { ueberblick: renderOverview, erzeugung: renderGen, preise: renderPrice, residuallast: renderRes, handel: renderTrade, meritorder: renderMO, netze: () => window.NetzeTab && window.NetzeTab.show() };
 function setTab(t) {
   if (!RENDER[t]) t = "ueberblick"; tab = t;
   document.querySelectorAll(".ed-tab").forEach(b => b.setAttribute("aria-selected", b.dataset.tab === t));
   document.querySelectorAll("[data-panel]").forEach(p => p.hidden = p.dataset.panel !== t);
   document.getElementById("rangeRow").hidden = !["erzeugung", "preise", "residuallast", "handel"].includes(t);
-  if (D) RENDER[t]();
+  if (D || t === "netze") RENDER[t]();
   try { localStorage.setItem("ed-tab", t); } catch (e) {}
 }
 document.getElementById("tabs").addEventListener("click", ev => { const b = ev.target.closest(".ed-tab"); if (!b) return; if (location.hash.slice(1) !== b.dataset.tab) location.hash = b.dataset.tab; else setTab(b.dataset.tab); });
@@ -695,8 +809,8 @@ document.getElementById("range").addEventListener("click", ev => { const b = ev.
 ["pGas", "pCo2", "pCoal"].forEach(id => document.getElementById(id).addEventListener("input", () => renderMO()));
 document.getElementById("moHour").addEventListener("input", renderMOHour);
 document.getElementById("reload").addEventListener("click", () => { try { localStorage.removeItem("ed-cache"); } catch (e) {} location.reload(); });
-let rz; let lastW = window.innerWidth; window.addEventListener("resize", () => { if (window.innerWidth === lastW) return; lastW = window.innerWidth; clearTimeout(rz); rz = setTimeout(() => D && RENDER[tab](), 150); });
-if (window.matchMedia) window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => D && RENDER[tab]());
+let rz; let lastW = window.innerWidth; window.addEventListener("resize", () => { if (window.innerWidth === lastW) return; lastW = window.innerWidth; clearTimeout(rz); rz = setTimeout(() => D && tab !== "netze" && RENDER[tab](), 150); });
+if (window.matchMedia) window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => D && tab !== "netze" && RENDER[tab]());
 
 /* ---------- Daten live von SMARD laden ---------- */
 const SMARD = "https://www.smard.de/app/chart_data/";

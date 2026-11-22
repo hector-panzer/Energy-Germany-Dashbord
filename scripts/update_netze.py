@@ -296,14 +296,18 @@ class Index:
                     self.by_tok.setdefault(t, []).append(i)
 
     def find(self, query, prefer="s", min_kv=0, exact_only=False):
+        r = self.find_all(query, prefer, min_kv, exact_only, top=1)
+        return r[0] if r else None
+
+    def find_all(self, query, prefer="s", min_kv=0, exact_only=False, top=8):
         q = toks(query, ST_STOP)
         if not q:
-            return None
+            return []
         key = " ".join(q)
         cands = set()
         for t in q:
             cands.update(self.by_tok.get(t, []))
-        best, bs = None, -1e9
+        scored = []
         for i in cands:
             it = self.items[i]
             if it["kind"] == "s" and it["kv"] < min_kv:
@@ -325,11 +329,9 @@ class Index:
             if it["kind"] == prefer:
                 score += 8
             score += min(it["kv"], 400) / 100 + min(it["mw"], 3000) / 1000
-            if score > bs:
-                best, bs = it, score
-        if best is None:
-            return None
-        return best, bs
+            scored.append((it, score))
+        scored.sort(key=lambda x: -x[1])
+        return scored[:top]
 
 
 # ================================================================ 2) JAO (Flow-Based Market Coupling, Region Core)
@@ -469,6 +471,14 @@ def update_jao(days, idx, prev):
                         borders.setdefault(k[7:].upper(), {"max": []}).setdefault("sched", []).append(float(v))
         except Exception as e:
             log(f"  JAO scheduledExchanges {ds}: {e!r}")
+        try:
+            ps = jao_get("priceSpread", day)
+            for d in ps:
+                for k, v in d.items():
+                    if k.startswith("border_DE_") and v is not None:
+                        borders.setdefault(k[7:], {"max": []}).setdefault("spread", []).append(float(v))
+        except Exception as e:
+            log(f"  JAO priceSpread {ds}: {e!r}")
         bsum = {}
         for k, v in borders.items():
             m = v.get("max", [])
@@ -476,6 +486,9 @@ def update_jao(days, idx, prev):
             bsum[k] = {"max_avg": round(sum(m) / len(m)) if m else None, "max_min": round(min(m)) if m else None,
                        "sched_avg": round(sum(s_) / len(s_)) if s_ else None, "sched_max": round(max(s_)) if s_ else None,
                        "n_max": len(m), "n_sched": len(s_)}
+            sp_ = v.get("spread", [])
+            if sp_:
+                bsum[k]["spread_avg"] = round(sum(sp_) / len(sp_), 1)  # Preis im Nachbarland minus Deutschland
         out[ds] = {"cnecs": rows, "borders": bsum, "n_records": len(sp)}
         log(f"  JAO {ds}: {len(sp)} Viertelstunden-Einträge, {len(rows)} bindende Engpässe, {sum(1 for r in rows if r['geo'])} mit Kartenposition")
         time.sleep(2)
@@ -570,11 +583,32 @@ def num(s):
 # Namen, die keinen Ort haben oder die OpenStreetMap anders nennt
 RD_FIX = {
     "boerse": None,
+    "westnetz nike": None,
     "illwerke vkw": (47.07, 9.93, "Illwerke (Montafon, Vorarlberg)"),
     "kuehtai": (47.21, 11.02, "Kühtai (Tirol)"),
     "silz": (47.27, 10.94, "Silz (Tirol)"),
     "waldeck": (51.18, 9.07, "Pumpspeicherwerk Waldeck"),
     "goldisthal": (50.51, 11.00, "Pumpspeicherwerk Goldisthal"),
+    "frankfurt west": (50.10, 8.64, "Heizkraftwerk Frankfurt West"),
+    "hannover linden": (52.36, 9.71, "Heizkraftwerk Hannover-Linden"),
+    "hannover gkh": (52.41, 9.66, "Gemeinschaftskraftwerk Hannover (Stöcken)"),
+    "baltic cable": (53.90, 10.80, "Baltic Cable, Lübeck-Herrenwyk"),
+    "heide west": (54.19, 9.08, "Umspannwerk Heide (Holstein)"),
+    "hammuentrop": (51.68, 7.97, "Kraftwerke Hamm-Uentrop"),
+    "gebersdorf": (49.43, 11.01, "Heizkraftwerk Nürnberg-Gebersdorf"),
+    "kmw": (50.02, 8.25, "Kraftwerke Mainz-Wiesbaden"),
+    "infraleuna": (51.32, 12.02, "Kraftwerk Leuna"),
+    "infra hoe": (50.09, 8.53, "Industriepark Höchst"),
+    "weisweilervgt": (50.84, 6.32, "Kraftwerk Weisweiler"),
+    "gtkw da": (49.87, 8.65, "Gasturbinen Darmstadt"),
+    "schwarzheide": (51.48, 13.87, "BASF Schwarzheide"),
+    "berlin mitte": (52.51, 13.42, "Heizkraftwerk Berlin-Mitte"),
+    "halle dieselstr": (51.47, 11.99, "Heizkraftwerk Halle-Dieselstraße"),
+    "wedel": (53.57, 9.72, "Heizkraftwerk Wedel"),
+    "schkopau": (51.40, 11.95, "Kraftwerk Schkopau"),
+    "wp emsland": (52.75, 7.30, "Windparks im Emsland", 1),
+    "riffgrund": (54.0, 6.5, "Offshore-Windpark Borkum Riffgrund", 1),
+    "owp baltic 1": (54.7, 12.75, "Offshore-Windparks EnBW Baltic 1 und 2", 1),
 }
 # Sammelmeldungen ganzer Verteilnetzgebiete (vor allem abgeregelte Wind- und Solaranlagen): nur ungefähre Lage
 RD_REGION = [
@@ -614,17 +648,41 @@ def rd_locate(name, energy, idx, cache):
         prefer = "w" if energy == "Konventionell" or re.search(r"(kraftwerk|kw|block|gt|gud|owp|offshore|wp )", name, re.I) else "s"
         if re.match(r"^(uw|50h uw|ava|shn|umspann)", name, re.I) or "cluster" in name.lower():
             prefer = "s"
+        want_wind = bool(re.match(r"^(50h )?(owp|wp)\b", name, re.I))
+        want_solar = bool(re.match(r"^(50h )?pv\b", name, re.I))
+
+        def ok(it):
+            nm = it["name"].lower()
+            if not (46.3 <= it["lat"] <= 55.6 and 5.4 <= it["lon"] <= 15.6):  # deutsche Anlagen (plus Grenzgebiet)
+                return None
+            if re.search(r"unterwerk|bahnstrom|batterie|speicher\b|transrapid", nm):  # Bahnstrom-Unterwerke, Batteriespeicher
+                return None
+            src = (it.get("src") or "").lower()
+            pen = 0
+            if it["kind"] == "w":
+                if want_wind and src and src != "wind":
+                    pen -= 40
+                if want_solar and src and src != "solar":
+                    pen -= 40
+                if energy == "Konventionell" and not want_wind and src in ("solar", "wind"):
+                    pen -= 40
+            return pen
+
         cand = None
-        if tk:
-            m = idx.find(" ".join(tk), prefer=prefer)
-            if m and m[1] >= 30:
-                cand = m
-            else:
-                for t in tk:
-                    m = idx.find(t, prefer=prefer, exact_only=False)
-                    if m and (t in m[0]["tk"]) and (cand is None or m[1] > cand[1]):
-                        cand = m
-                        break
+        queries = ([" ".join(tk)] if len(tk) > 1 else []) + tk
+        for q in queries:
+            for it_s in idx.find_all(q, prefer=prefer):
+                it, sc = it_s
+                pen = ok(it)
+                if pen is None:
+                    continue
+                sc += pen
+                if q in tk and q not in it["tk"]:
+                    continue
+                if sc >= 30 and (cand is None or sc > cand[1]):
+                    cand = (it, sc)
+            if len(tk) > 1 and q == queries[0] and cand and cand[1] >= 60:
+                break  # ganzer Name passt: nicht mehr nach einzelnen Wörtern suchen
         if cand:
             it = cand[0]
             res = (it["lat"], it["lon"], it["name"])
