@@ -1,16 +1,16 @@
-Lauf gestartet 2026-11-22T11:45:03.039755+00:00
+Lauf gestartet 2026-11-23T08:57:43.630613+00:00
 Netzgeometrie: aktuell (jünger als eine Woche), übersprungen
 Ortsindex: 14593 Namen
 JAO laden …
-  JAO 2026-11-15: 386 Viertelstunden-Einträge, 25 bindende Engpässe, 15 mit Kartenposition
   JAO 2026-11-16: 541 Viertelstunden-Einträge, 35 bindende Engpässe, 13 mit Kartenposition
   JAO 2026-11-17: 432 Viertelstunden-Einträge, 29 bindende Engpässe, 11 mit Kartenposition
   JAO 2026-11-18: 712 Viertelstunden-Einträge, 36 bindende Engpässe, 14 mit Kartenposition
   JAO 2026-11-19: 271 Viertelstunden-Einträge, 22 bindende Engpässe, 11 mit Kartenposition
   JAO 2026-11-20: 266 Viertelstunden-Einträge, 17 bindende Engpässe, 6 mit Kartenposition
   JAO 2026-11-21: 175 Viertelstunden-Einträge, 17 bindende Engpässe, 9 mit Kartenposition
+  JAO 2026-11-22: 272 Viertelstunden-Einträge, 19 bindende Engpässe, 7 mit Kartenposition
 Redispatch laden …
-  Redispatch 2026-11-15–2026-11-21: 684 Maßnahmen, Tage mit Daten: ['2026-11-15', '2026-11-16', '2026-11-17', '2026-11-18', '2026-11-19', '2026-11-20', '2026-11-21']
+  Redispatch 2026-11-16–2026-11-22: 705 Maßnahmen, Tage mit Daten: ['2026-11-16', '2026-11-17', '2026-11-18', '2026-11-19', '2026-11-20', '2026-11-21', '2026-11-22']
   gespeichert netze.json: 0.23 MB
 
 == Redispatch: Zuordnung der Anlagen ==
@@ -44,7 +44,9 @@ Redispatch laden …
   50H UW Wessin  ->  Umspannwerk Wessin (53.5721, 11.6985)
   50H UW Wustermark  ->  Umspannwerk Wustermark (52.5623, 12.9426)
   50H_AVA_CR_FOE  ->  Netzgebiet Avacon (Sachsen-Anhalt) (52.0, 11.6)
+  50H_AVA_CR_STW  ->  Netzgebiet Avacon (Sachsen-Anhalt) (52.0, 11.6)
   50H_AVA_CR_WK  ->  Netzgebiet Avacon (Sachsen-Anhalt) (52.0, 11.6)
+  50H_AVA_CR_WOL  ->  Netzgebiet Avacon (Sachsen-Anhalt) (52.0, 11.6)
   50H_EDIS_CR_EH  ->  Netzgebiet E.DIS (Brandenburg, Mecklenburg-Vorpommern) (53.1, 13.4)
   50H_EDIS_CR_LHG  ->  Netzgebiet E.DIS (Brandenburg, Mecklenburg-Vorpommern) (53.1, 13.4)
   50H_EDIS_CR_NHG_Nord  ->  Netzgebiet E.DIS (Brandenburg, Mecklenburg-Vorpommern) (53.1, 13.4)
@@ -90,9 +92,6 @@ Redispatch laden …
   AVA Cluster Voslapp  ->  Voslapp (53.6057, 8.0861)
   BAG NWAK-Cluster 07a Irsching  ->  Umspannwerk Irsching (48.7641, 11.5833)
   Boxberg (Standort)  ->  Kraftwerk Boxberg (51.4197, 14.5649)
-  Braunschweig GT  ->  Umspannwerk Braunschweig Nord (52.3016, 10.5051)
-  Braunschweig HKWM DT42  ->  Umspannwerk Braunschweig Nord (52.3016, 10.5051)
-  Braunschweig HKWM GT31  ->  Umspannwerk Braunschweig Nord (52.3016, 10.5051)
   Börse  ->  — kein Ort —
   CHEMIEPARK_MARL_KRAFTWERKE  ->  Kraftwerk 3 Marl (51.6897, 7.0778)
   Datteln_4  ->  Kraftwerk Datteln IV (51.6315, 7.3404)
@@ -116,7 +115,6 @@ Redispatch laden …
   Hannover-Linden GuD  ->  Heizkraftwerk Hannover-Linden (52.36, 9.71)
   Heizkraftwerk Altbach/Deizisau GT E  ->  Heizkraftwerk Altbach/Deizisau (48.7186, 9.372)
   Heizkraftwerk_Pforzheim  ->  Heizkraftwerk Pforzheim (48.8974, 8.7248)
-  INFRA_HOE_GTX1  ->  Industriepark Höchst (50.09, 8.53)
   Irsching 4  ->  Umspannwerk Irsching (48.7641, 11.5833)
   Irsching 5  ->  Umspannwerk Irsching (48.7641, 11.5833)
   Jänschwalde (Standort)  ->  Kraftwerk Jänschwalde (51.8354, 14.4599)
@@ -162,17 +160,16 @@ Redispatch laden …
   WP Emsland  ->  Windparks im Emsland (52.75, 7.3)
   Waldeck 5  ->  Pumpspeicherwerk Waldeck (51.18, 9.07)
   Wilhelmshaven  ->  Umspannwerk Kraftwerk Wilhelmshaven (53.5635, 8.1477)
-  Wolfsburg Süd GT 32  ->  Umspannwerk Wolfsburg (52.4352, 10.7581)
-  Wolfsburg West GUD GT50  ->  Umspannwerk Wolfsburg (52.4352, 10.7581)
   Würzburg GT 1  ->  — kein Ort —
   illwerke vkw AG  ->  Illwerke (Montafon, Vorarlberg) (47.07, 9.93)
 == Redispatch: ohne Ort (MWh im Zeitraum) ==
-     10127  STUMMHAFEN_10
+     15593  STUMMHAFEN_10
       3832  AMP_WESTNETZ_NIKE_CR_WIND
         85  AMP_WESTNETZ_NIKE_CR_SONSTIGE_EE
+        82  HKW Aalen
         60  Würzburg GT 1
-        49  HKW Aalen
 == JAO: Engpässe ohne Kartenposition ==
+  Arad - Timisoara   (gelesen als ['Arad', 'Timisoara'])
   Isaccea - Vulcanesti   (gelesen als ['Isaccea', 'Vulcanesti'])
   Kainachtal - Maribor 473   (gelesen als ['Kainachtal', 'Maribor'])
   Krosno Iskrzynia - Rzeszow   (gelesen als ['Krosno Iskrzynia', 'Rzeszow'])
@@ -191,21 +188,23 @@ Redispatch laden …
   V.Kapusany - Mukachevo (WPS)   (gelesen als ['Kapusany', 'Mukachevo'])
   Wien Suedost - Gyoer 245   (gelesen als ['Wien Suedost', 'Gyoer'])
 == JAO: Zuordnung ==
-  Diele - Meeden 380 Black  ->  ['Diele', '380 kV Meeden']
-  Lelystad - Ens 380 Wit  ->  ['380 kV Lelystad', '380 kV Ens']
-  External Constraint PL_LT_BigHub_export  ->  []
-  Isaccea - Vulcanesti  ->  []
-  Sottrum Transformer T421  ->  ['Sottrum']
-  Y-Altheim (-Simbach - St. Peter) 234/230  ->  ['Umspannwerk Altheim']
   L 400kV N0 2 CREYS-ST-VULBAS-OUEST  ->  ['Poste électrique de Creys-Malville']
-  Oberzier - Oberzier TR 441 E  ->  ['Station Oberzier']
-  External Constraint BE_AL_export  ->  []
-  External Constraint DE_AL_import  ->  []
-  External Constraint NL_DK1_COBRA_export  ->  []
-  PST Gronau TR 441 E  ->  ['Station Gronau']
-  Nosovice - Varin  ->  []
-  External Constraint DE_AL_export  ->  []
-  Diele - Meeden SCHWARZ  ->  ['Diele', '380 kV Meeden']
-  Maasbracht - Oberzier 380 white  ->  ['380 kV Maasbracht', 'Station Oberzier']
+  Resita - Timisoara c1  ->  []
+  L 400kV N0 1 CREYS-ST-VULBAS-OUEST  ->  ['Poste électrique de Creys-Malville']
+  Avelgem - Avelin 380.80  ->  ['Avelgem', 'Poste électrique d’Avelin']
   External Constraint BE_AL_import  ->  []
-Fertig in 39 s
+  Paroseni - Targu Jiu Nord  ->  []
+  External Constraint DE_AL_export  ->  []
+  External Constraint PL_LT_BigHub_export  ->  []
+  External Constraint PL_SE4_SwePol_export  ->  []
+  Arad - Timisoara  ->  []
+  External Constraint NL_DK1_COBRA_import  ->  []
+  PST Gronau TR 441 E  ->  ['Station Gronau']
+  External Constraint DE_NO2_BigHub_export  ->  []
+  External Constraint DE_DK2_BigHub_export  ->  []
+  Paroseni - Targu Jiu Nord  ->  []
+  Duernrohr 1 - Etzersdorf 434B  ->  ['Umspannwerk Dürnrohr', 'Schaltwerk Etzersdorf']
+  Isaccea - Vulcanesti  ->  []
+  Maasbracht - Oberzier 380 white  ->  ['380 kV Maasbracht', 'Station Oberzier']
+  Maasbracht - Van Eyck 380 White/28  ->  ['380 kV Maasbracht', 'Elia Van Eyck']
+Fertig in 38 s
