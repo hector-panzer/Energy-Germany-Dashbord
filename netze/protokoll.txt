@@ -1,16 +1,16 @@
-Lauf gestartet 2026-11-24T08:44:02.526923+00:00
+Lauf gestartet 2026-11-25T08:50:02.845555+00:00
 Netzgeometrie: aktuell (jünger als eine Woche), übersprungen
 Ortsindex: 14593 Namen
 JAO laden …
-  JAO 2026-11-17: 432 Viertelstunden-Einträge, 29 bindende Engpässe, 11 mit Kartenposition
   JAO 2026-11-18: 712 Viertelstunden-Einträge, 36 bindende Engpässe, 14 mit Kartenposition
   JAO 2026-11-19: 271 Viertelstunden-Einträge, 22 bindende Engpässe, 11 mit Kartenposition
   JAO 2026-11-20: 266 Viertelstunden-Einträge, 17 bindende Engpässe, 6 mit Kartenposition
   JAO 2026-11-21: 175 Viertelstunden-Einträge, 17 bindende Engpässe, 9 mit Kartenposition
   JAO 2026-11-22: 272 Viertelstunden-Einträge, 19 bindende Engpässe, 7 mit Kartenposition
   JAO 2026-11-23: 133 Viertelstunden-Einträge, 20 bindende Engpässe, 3 mit Kartenposition
+  JAO 2026-11-24: 221 Viertelstunden-Einträge, 31 bindende Engpässe, 14 mit Kartenposition
 Redispatch laden …
-  Redispatch 2026-11-17–2026-11-23: 721 Maßnahmen, Tage mit Daten: ['2026-11-17', '2026-11-18', '2026-11-19', '2026-11-20', '2026-11-21', '2026-11-22', '2026-11-23']
+  Redispatch 2026-11-18–2026-11-24: 691 Maßnahmen, Tage mit Daten: ['2026-11-18', '2026-11-19', '2026-11-20', '2026-11-21', '2026-11-22', '2026-11-23', '2026-11-24']
   gespeichert netze.json: 0.23 MB
 
 == Redispatch: Zuordnung der Anlagen ==
@@ -29,6 +29,7 @@ Redispatch laden …
   50H InfraLeuna IKW  ->  Kraftwerk Leuna (51.32, 12.02)
   50H Leipzig Nord GuD  ->  Umspannwerk Leipzig C (51.3673, 12.3902)
   50H Leipzig Süd GuD  ->  Umspannwerk Leipzig C (51.3673, 12.3902)
+  50H Neubrandenburg GuD  ->  Umspannwerk Neubrandenburg (53.5701, 13.28)
   50H OWP Arcadis Ost 1  ->  Arcadis Ost 1 (54.8129, 13.6668)
   50H OWP Arkona  ->  Arkona (54.7869, 14.0979)
   50H OWP Baltic Eagle  ->  Baltic Eagle (54.8326, 13.8383)
@@ -126,13 +127,12 @@ Redispatch laden …
   KNAPSACK_20  ->  Station Knapsack (50.8637, 6.8426)
   Kiel (Küstenkraftwerk gesamt)  ->  Küstenkraftwerk K.I.E.L. (54.3412, 10.1792)
   Knapsack 1  ->  Station Knapsack (50.8637, 6.8426)
+  Kraftwerk Walheim GT D  ->  Kraftwerk Walheim (49.0195, 9.1554)
   Kühtai 1 M1 (Uniper)  ->  Kühtai (Tirol) (47.21, 11.02)
   LAUSWARD_GUDF  ->  Kraftwerk Lausward (51.2222, 6.7318)
+  Leitzach Pool  ->  Pumpspeicherkraftwerk Leitzach (47.874, 11.87)
   Lippendorf  ->  Kraftwerk Lippendorf (51.1814, 12.3749)
   NEURATH_F  ->  Kraftwerk Neurath BoA 2&3 (51.0361, 6.6325)
-  NEURATH_G  ->  Kraftwerk Neurath BoA 2&3 (51.0361, 6.6325)
-  NIEDERAUSSEM_H  ->  Kraftwerk Niederaußem (50.9929, 6.6694)
-  NIEDERAUSSEM_K  ->  Kraftwerk Niederaußem (50.9929, 6.6694)
   NIEHL-31-GUD  ->  Heizkraftwerk Köln-Niehl (50.975, 6.9871)
   NIEHL-II  ->  Heizkraftwerk Köln-Niehl (50.975, 6.9871)
   Netzreservekraftwerk BERGKAMEN_A  ->  Kraftwerk Bergkamen (51.6365, 7.6169)
@@ -141,6 +141,7 @@ Redispatch laden …
   OWP Nordergründe  ->  Nordergründe (53.8357, 8.1672)
   ReserveKW Ingolstadt 3  ->  Kraftwerk Ingolstadt (48.7628, 11.5031)
   ReserveKW Ingolstadt 4  ->  Kraftwerk Ingolstadt (48.7628, 11.5031)
+  ReserveKW Staudinger 4  ->  Kraftwerk Staudinger (50.0881, 8.9479)
   ReserveKW Staudinger 5  ->  Kraftwerk Staudinger (50.0881, 8.9479)
   Reservekraftwerk Altbach/Deizisau Block 1  ->  Heizkraftwerk Altbach/Deizisau (48.7186, 9.372)
   Reservekraftwerk Heilbronn Block 5  ->  Heizkraftwerk Heilbronn (49.1751, 9.2071)
@@ -162,11 +163,11 @@ Redispatch laden …
   UW Dörpen-West  ->  Dörpen (52.9806, 7.3652)
   UW Emden-Ost  ->  Kraftwerk Emden (53.3412, 7.2059)
   UW Garrel-Ost alpha  ->  Garrel (52.9642, 8.0272)
+  WALSUM_10  ->  Umspannwerk Walsum (51.5262, 6.7109)
   WEISWEILERVGT_H3  ->  Kraftwerk Weisweiler (50.84, 6.32)
   WEISWEILER_G  ->  Kraftwerk Weisweiler (50.8365, 6.321)
   WEISWEILER_H  ->  Kraftwerk Weisweiler (50.8365, 6.321)
   WP Emsland  ->  Windparks im Emsland (52.75, 7.3)
-  Waldeck 5  ->  Pumpspeicherwerk Waldeck (51.18, 9.07)
   Wilhelmshaven  ->  Umspannwerk Kraftwerk Wilhelmshaven (53.5635, 8.1477)
   Würzburg GT 1  ->  — kein Ort —
   illwerke vkw AG  ->  Illwerke (Montafon, Vorarlberg) (47.07, 9.93)
@@ -186,32 +187,42 @@ Redispatch laden …
   Mikulowa PST1   (gelesen als ['Mikulowa PST1'])
   Nosovice - Varin   (gelesen als ['Nosovice', 'Varin'])
   Obersielach - Podlog 247   (gelesen als ['Obersielach', 'Podlog'])
+  Paks - Perkata   (gelesen als ['Paks', 'Perkata'])
   Paroseni - Targu Jiu Nord   (gelesen als ['Paroseni', 'Targu Jiu'])
   Pehlin - Divaca   (gelesen als ['Pehlin', 'Divaca'])
   Resita - Timisoara c1   (gelesen als ['Resita', 'Timisoara'])
-  Rosiori - Mukacevo   (gelesen als ['Rosiori', 'Mukacevo'])
   Szabolcsbaka - Zahidno Ukrainska   (gelesen als ['Szabolcsbaka', 'Zahidno Ukrainska'])
-  TR Rosiori 400/220 1   (gelesen als ['Rosiori'])
   Wien Suedost - Gyoer 245   (gelesen als ['Wien Suedost', 'Gyoer'])
 == JAO: Zuordnung ==
-  Isaccea - Vulcanesti  ->  []
-  Paroseni - Targu Jiu Nord  ->  []
+  Paks - Perkata  ->  []
+  External Constraint DE_NO2_BigHub_import  ->  []
   Resita - Timisoara c1  ->  []
-  Paroseni - Targu Jiu Nord  ->  []
-  Pehlin - Divaca  ->  []
-  Pleinting - St. Peter 258  ->  ['Umspannwerk Pleinting', 'Umspannwerk St. Peter']
-  Isaccea - Vulcanesti  ->  []
+  Ensdorf - Vigy VIGY2 S  ->  ['Umspannanlage Ensdorf', 'Poste électrique de Vigy']
   Ensdorf - Vigy VIGY1 N  ->  ['Umspannanlage Ensdorf', 'Poste électrique de Vigy']
+  Altheim - Sittling 220  ->  ['Umspannwerk Altheim', 'Umspannwerk Sittling']
+  Oberzier - Oberzier TR 441 E  ->  ['Station Oberzier']
+  Duernrohr 1 - Etzersdorf 434B  ->  ['Umspannwerk Dürnrohr', 'Schaltwerk Etzersdorf']
+  PST Gronau TR 441 E  ->  ['Station Gronau']
+  Nosovice - Varin  ->  []
+  Altheim - Sittling 219  ->  ['Umspannwerk Altheim', 'Umspannwerk Sittling']
+  Strass - Thaur 273B  ->  ['Schaltwerk Strass', 'Umspannwerk Thaur']
+  Maasbracht - Oberzier 380 white  ->  ['380 kV Maasbracht', 'Station Oberzier']
+  Paroseni - Targu Jiu Nord  ->  []
   L 400kV N0 2 CREYS-ST-VULBAS-OUEST  ->  ['Poste électrique de Creys-Malville']
-  Etzersdorf - Kronsdorf 434A  ->  []
-  Obersielach - Podlog 247  ->  []
-  Obersielach - Podlog 247  ->  []
   External Constraint DE_AL_export  ->  []
-  External Constraint BE_AL_import  ->  []
+  Isaccea - Vulcanesti  ->  []
+  Mecklar - Eisenach 450  ->  ['Umspannwerk Mecklar 380kV', 'Umspannwerk Eisenach']
   External Constraint PL_SE4_SwePol_export  ->  []
-  External Constraint DE_NO2_BigHub_export  ->  []
+  Doel - Zandvliet 380.25  ->  ['Doel 380', 'Zandvliet']
+  External Constraint BE_AL_import  ->  []
+  External Constraint PL_LT_BigHub_export  ->  []
+  Diele - Meeden SCHWARZ  ->  ['Diele', '380 kV Meeden']
   External Constraint NL_DK1_COBRA_import  ->  []
-  External Constraint NL_DK1_COBRA_export  ->  []
+  External Constraint PL_SE4_SwePol_import  ->  []
+  Pehlin - Divaca  ->  []
   External Constraint BE_AL_export  ->  []
+  Wielopole - Nosovice  ->  ['Stacja elektroenergetyczna 400/220/110kV „SE Wielopole”', 'Nošovice']
+  External Constraint DE_NO2_BigHub_export  ->  []
   External Constraint DE_AL_import  ->  []
-Fertig in 43 s
+  External Constraint NL_DK1_COBRA_export  ->  []
+Fertig in 38 s
