@@ -1,17 +1,17 @@
-Lauf gestartet 2026-11-25T08:50:02.845555+00:00
+Lauf gestartet 2026-11-26T08:46:35.112365+00:00
 Netzgeometrie: aktuell (jünger als eine Woche), übersprungen
 Ortsindex: 14593 Namen
 JAO laden …
-  JAO 2026-11-18: 712 Viertelstunden-Einträge, 36 bindende Engpässe, 14 mit Kartenposition
   JAO 2026-11-19: 271 Viertelstunden-Einträge, 22 bindende Engpässe, 11 mit Kartenposition
   JAO 2026-11-20: 266 Viertelstunden-Einträge, 17 bindende Engpässe, 6 mit Kartenposition
   JAO 2026-11-21: 175 Viertelstunden-Einträge, 17 bindende Engpässe, 9 mit Kartenposition
   JAO 2026-11-22: 272 Viertelstunden-Einträge, 19 bindende Engpässe, 7 mit Kartenposition
   JAO 2026-11-23: 133 Viertelstunden-Einträge, 20 bindende Engpässe, 3 mit Kartenposition
   JAO 2026-11-24: 221 Viertelstunden-Einträge, 31 bindende Engpässe, 14 mit Kartenposition
+  JAO 2026-11-25: 365 Viertelstunden-Einträge, 22 bindende Engpässe, 14 mit Kartenposition
 Redispatch laden …
-  Redispatch 2026-11-18–2026-11-24: 691 Maßnahmen, Tage mit Daten: ['2026-11-18', '2026-11-19', '2026-11-20', '2026-11-21', '2026-11-22', '2026-11-23', '2026-11-24']
-  gespeichert netze.json: 0.23 MB
+  Redispatch 2026-11-19–2026-11-25: 674 Maßnahmen, Tage mit Daten: ['2026-11-19', '2026-11-20', '2026-11-21', '2026-11-22', '2026-11-23', '2026-11-24', '2026-11-25']
+  gespeichert netze.json: 0.21 MB
 
 == Redispatch: Zuordnung der Anlagen ==
   50H BASF Schwarzheide  ->  BASF Schwarzheide (51.48, 13.87)
@@ -81,7 +81,6 @@ Redispatch laden …
   50H_TEN_CR_M2_VIB  ->  Netzgebiet TEN (Thüringen) (50.9, 11.0)
   50H_TEN_CR_S1_ATF  ->  Netzgebiet TEN (Thüringen) (50.9, 11.0)
   50H_TEN_CR_S2_WD  ->  Netzgebiet TEN (Thüringen) (50.9, 11.0)
-  50H_WEMA_CR_GUE  ->  Netzgebiet WEMAG (Westmecklenburg) (53.6, 11.5)
   AMP_WESTNETZ_EMSLAND_CR_KONVENTIONELL  ->  Netzgebiet Westnetz Emsland (52.7, 7.35)
   AMP_WESTNETZ_EMSLAND_CR_KWK  ->  Netzgebiet Westnetz Emsland (52.7, 7.35)
   AMP_WESTNETZ_EMSLAND_CR_SONSTIGE_EE  ->  Netzgebiet Westnetz Emsland (52.7, 7.35)
@@ -91,7 +90,6 @@ Redispatch laden …
   AMP_WESTNETZ_SAUERLAND_CR_WIND  ->  Netzgebiet Westnetz Sauerland (51.25, 8.2)
   AVA Cluster Helmstedt  ->  Umspannwerk Helmstedt (52.1999, 10.998)
   AVA Cluster Lehrte  ->  Umspannwerk Lehrte West (52.3812, 9.9508)
-  AVA Cluster Stadorf  ->  Stadorf (52.9934, 10.3824)
   AVA Cluster Voslapp  ->  Voslapp (53.6057, 8.0861)
   Boxberg (Standort)  ->  Kraftwerk Boxberg (51.4197, 14.5649)
   Börse  ->  — kein Ort —
@@ -102,6 +100,7 @@ Redispatch laden …
   Emsland Block B  ->  Erdgaskraftwerk Emsland (52.4829, 7.3035)
   Emsland Block C  ->  Erdgaskraftwerk Emsland (52.4829, 7.3035)
   Emsland Block D  ->  Erdgaskraftwerk Emsland (52.4829, 7.3035)
+  Erzhausen 1  ->  Erzhausen (51.8975, 9.9237)
   Frankfurt West 4  ->  Heizkraftwerk Frankfurt West (50.1, 8.64)
   GERSTEINW_F (KapRes)  ->  — kein Ort —
   GERSTEINW_G (KapRes)  ->  — kein Ort —
@@ -118,11 +117,13 @@ Redispatch laden …
   HUCKINGEN_A  ->  Kraftwerk Huckingen (51.3756, 6.7233)
   Hannover (GKH) 2  ->  Gemeinschaftskraftwerk Hannover (Stöcken) (52.41, 9.66)
   Hannover-Linden GuD  ->  Heizkraftwerk Hannover-Linden (52.36, 9.71)
+  Heizkraftwerk Altbach/Deizisau GT C  ->  Heizkraftwerk Altbach/Deizisau (48.7186, 9.372)
   Heizkraftwerk Altbach/Deizisau GT E  ->  Heizkraftwerk Altbach/Deizisau (48.7186, 9.372)
   Heizkraftwerk_Pforzheim  ->  Heizkraftwerk Pforzheim (48.8974, 8.7248)
   Irsching 4  ->  Umspannwerk Irsching (48.7641, 11.5833)
   Irsching 5  ->  Umspannwerk Irsching (48.7641, 11.5833)
   Jänschwalde (Standort)  ->  Kraftwerk Jänschwalde (51.8354, 14.4599)
+  KMW_KW3  ->  Kraftwerke Mainz-Wiesbaden (50.02, 8.25)
   KMW_KW5  ->  Kraftwerke Mainz-Wiesbaden (50.02, 8.25)
   KNAPSACK_20  ->  Station Knapsack (50.8637, 6.8426)
   Kiel (Küstenkraftwerk gesamt)  ->  Küstenkraftwerk K.I.E.L. (54.3412, 10.1792)
@@ -133,25 +134,29 @@ Redispatch laden …
   Leitzach Pool  ->  Pumpspeicherkraftwerk Leitzach (47.874, 11.87)
   Lippendorf  ->  Kraftwerk Lippendorf (51.1814, 12.3749)
   NEURATH_F  ->  Kraftwerk Neurath BoA 2&3 (51.0361, 6.6325)
+  NEURATH_G  ->  Kraftwerk Neurath BoA 2&3 (51.0361, 6.6325)
+  NIEDERAUSSEM_G  ->  Kraftwerk Niederaußem (50.9929, 6.6694)
+  NIEDERAUSSEM_K  ->  Kraftwerk Niederaußem (50.9929, 6.6694)
   NIEHL-31-GUD  ->  Heizkraftwerk Köln-Niehl (50.975, 6.9871)
   NIEHL-II  ->  Heizkraftwerk Köln-Niehl (50.975, 6.9871)
   Netzreservekraftwerk BERGKAMEN_A  ->  Kraftwerk Bergkamen (51.6365, 7.6169)
+  Netzreservekraftwerk Bexbach A  ->  Kraftwerk Bexbach (49.3613, 7.237)
   Netzreservekraftwerk GTKW-DA-POOL  ->  Gasturbinen Darmstadt (49.87, 8.65)
-  OWP Borkum Riffgrund 3  ->  Offshore-Windpark Borkum Riffgrund (54.0, 6.5)
+  Netzreservekraftwerk KMW 2 DT  ->  Kraftwerke Mainz-Wiesbaden (50.02, 8.25)
   OWP Nordergründe  ->  Nordergründe (53.8357, 8.1672)
   ReserveKW Ingolstadt 3  ->  Kraftwerk Ingolstadt (48.7628, 11.5031)
   ReserveKW Ingolstadt 4  ->  Kraftwerk Ingolstadt (48.7628, 11.5031)
+  ReserveKW Plattling  ->  Kraftwerk Plattling (48.8005, 12.8679)
   ReserveKW Staudinger 4  ->  Kraftwerk Staudinger (50.0881, 8.9479)
   ReserveKW Staudinger 5  ->  Kraftwerk Staudinger (50.0881, 8.9479)
+  ReserveKW Zolling 5  ->  Kraftwerk Zolling (48.4549, 11.8022)
   Reservekraftwerk Altbach/Deizisau Block 1  ->  Heizkraftwerk Altbach/Deizisau (48.7186, 9.372)
   Reservekraftwerk Heilbronn Block 5  ->  Heizkraftwerk Heilbronn (49.1751, 9.2071)
   Reservekraftwerk Heilbronn Block 7  ->  Heizkraftwerk Heilbronn (49.1751, 9.2071)
   Reservekraftwerk Rheinhafen-Dampfkraftwerk Karlsruhe Block 4  ->  Rheinhafen-Dampfkraftwerk (49.013, 8.3065)
-  Rheinhafen-Dampfkraftwerk Karlsruhe Block 8  ->  Rheinhafen-Dampfkraftwerk (49.013, 8.3065)
   Robert Frank 4 GT (KapRes)  ->  Kraftwerk Robert Frank (52.5472, 9.1138)
   Rostock Kohlekraftwerk  ->  Kraftwerk Rostock (54.1417, 12.1315)
   SHN Cluster Baltic Cable  ->  Baltic Cable, Lübeck-Herrenwyk (53.9, 10.8)
-  SHN Cluster Heide West T411 T412  ->  Umspannwerk Heide (Holstein) (54.19, 9.08)
   STUMMHAFEN_10  ->  — kein Ort —
   SW München KW-Pool  ->  München Nord (48.181, 11.6393)
   Schkopau  ->  Kraftwerk Schkopau (51.4, 11.95)
@@ -167,23 +172,21 @@ Redispatch laden …
   WEISWEILERVGT_H3  ->  Kraftwerk Weisweiler (50.84, 6.32)
   WEISWEILER_G  ->  Kraftwerk Weisweiler (50.8365, 6.321)
   WEISWEILER_H  ->  Kraftwerk Weisweiler (50.8365, 6.321)
-  WP Emsland  ->  Windparks im Emsland (52.75, 7.3)
   Wilhelmshaven  ->  Umspannwerk Kraftwerk Wilhelmshaven (53.5635, 8.1477)
   Würzburg GT 1  ->  — kein Ort —
   illwerke vkw AG  ->  Illwerke (Montafon, Vorarlberg) (47.07, 9.93)
 == Redispatch: ohne Ort (MWh im Zeitraum) ==
      15593  STUMMHAFEN_10
-      3832  AMP_WESTNETZ_NIKE_CR_WIND
+      2342  AMP_WESTNETZ_NIKE_CR_WIND
       1972  GERSTEINW_F (KapRes)
        727  GERSTEINW_G (KapRes)
         85  AMP_WESTNETZ_NIKE_CR_SONSTIGE_EE
-        82  HKW Aalen
         60  Würzburg GT 1
+        42  HKW Aalen
 == JAO: Engpässe ohne Kartenposition ==
   Arad - Timisoara   (gelesen als ['Arad', 'Timisoara'])
   Etzersdorf - Kronsdorf 434A   (gelesen als ['Etzersdorf', 'Kronsdorf'])
   Isaccea - Vulcanesti   (gelesen als ['Isaccea', 'Vulcanesti'])
-  Liskovec - P. Bystrica   (gelesen als ['Liskovec', 'P. Bystrica'])
   Mikulowa PST1   (gelesen als ['Mikulowa PST1'])
   Nosovice - Varin   (gelesen als ['Nosovice', 'Varin'])
   Obersielach - Podlog 247   (gelesen als ['Obersielach', 'Podlog'])
@@ -192,37 +195,27 @@ Redispatch laden …
   Pehlin - Divaca   (gelesen als ['Pehlin', 'Divaca'])
   Resita - Timisoara c1   (gelesen als ['Resita', 'Timisoara'])
   Szabolcsbaka - Zahidno Ukrainska   (gelesen als ['Szabolcsbaka', 'Zahidno Ukrainska'])
-  Wien Suedost - Gyoer 245   (gelesen als ['Wien Suedost', 'Gyoer'])
 == JAO: Zuordnung ==
-  Paks - Perkata  ->  []
-  External Constraint DE_NO2_BigHub_import  ->  []
-  Resita - Timisoara c1  ->  []
-  Ensdorf - Vigy VIGY2 S  ->  ['Umspannanlage Ensdorf', 'Poste électrique de Vigy']
-  Ensdorf - Vigy VIGY1 N  ->  ['Umspannanlage Ensdorf', 'Poste électrique de Vigy']
-  Altheim - Sittling 220  ->  ['Umspannwerk Altheim', 'Umspannwerk Sittling']
-  Oberzier - Oberzier TR 441 E  ->  ['Station Oberzier']
-  Duernrohr 1 - Etzersdorf 434B  ->  ['Umspannwerk Dürnrohr', 'Schaltwerk Etzersdorf']
-  PST Gronau TR 441 E  ->  ['Station Gronau']
-  Nosovice - Varin  ->  []
-  Altheim - Sittling 219  ->  ['Umspannwerk Altheim', 'Umspannwerk Sittling']
-  Strass - Thaur 273B  ->  ['Schaltwerk Strass', 'Umspannwerk Thaur']
-  Maasbracht - Oberzier 380 white  ->  ['380 kV Maasbracht', 'Station Oberzier']
-  Paroseni - Targu Jiu Nord  ->  []
-  L 400kV N0 2 CREYS-ST-VULBAS-OUEST  ->  ['Poste électrique de Creys-Malville']
-  External Constraint DE_AL_export  ->  []
-  Isaccea - Vulcanesti  ->  []
-  Mecklar - Eisenach 450  ->  ['Umspannwerk Mecklar 380kV', 'Umspannwerk Eisenach']
-  External Constraint PL_SE4_SwePol_export  ->  []
+  Mikulowa PST1  ->  []
   Doel - Zandvliet 380.25  ->  ['Doel 380', 'Zandvliet']
-  External Constraint BE_AL_import  ->  []
+  Paroseni - Targu Jiu Nord  ->  []
+  Mecklar - Eisenach 450  ->  ['Umspannwerk Mecklar 380kV', 'Umspannwerk Eisenach']
+  Altheim - Sittling 219  ->  ['Umspannwerk Altheim', 'Umspannwerk Sittling']
+  Doel - Zandvliet 380.25  ->  ['Doel 380', 'Zandvliet']
+  Mecklar - Eisenach 450  ->  ['Umspannwerk Mecklar 380kV', 'Umspannwerk Eisenach']
+  Y-Altheim (-Simbach - St. Peter) 234/230  ->  ['Umspannwerk Altheim']
+  Maasbracht - Oberzier 380 white  ->  ['380 kV Maasbracht', 'Station Oberzier']
+  Altheim - Sittling 220  ->  ['Umspannwerk Altheim', 'Umspannwerk Sittling']
+  Maasbracht - Oberzier 380 white  ->  ['380 kV Maasbracht', 'Station Oberzier']
+  L 400kV N0 1 CREYS-ST-VULBAS-OUEST  ->  ['Poste électrique de Creys-Malville']
+  External Constraint PL_SE4_SwePol_export  ->  []
+  L 400kV N0 2 CREYS-ST-VULBAS-OUEST  ->  ['Poste électrique de Creys-Malville']
+  PST Gronau TR 441 E  ->  ['Station Gronau']
+  Isaccea - Vulcanesti  ->  []
   External Constraint PL_LT_BigHub_export  ->  []
-  Diele - Meeden SCHWARZ  ->  ['Diele', '380 kV Meeden']
   External Constraint NL_DK1_COBRA_import  ->  []
-  External Constraint PL_SE4_SwePol_import  ->  []
-  Pehlin - Divaca  ->  []
-  External Constraint BE_AL_export  ->  []
-  Wielopole - Nosovice  ->  ['Stacja elektroenergetyczna 400/220/110kV „SE Wielopole”', 'Nošovice']
-  External Constraint DE_NO2_BigHub_export  ->  []
-  External Constraint DE_AL_import  ->  []
-  External Constraint NL_DK1_COBRA_export  ->  []
-Fertig in 38 s
+  Maasbracht - Siersdorf 380 black  ->  ['380 kV Maasbracht', 'Siersdorf']
+  External Constraint DE_AL_export  ->  []
+  PST Gronau TR 441 E  ->  ['Station Gronau']
+  External Constraint BE_AL_import  ->  []
+Fertig in 51 s
