@@ -1,17 +1,17 @@
-Lauf gestartet 2026-11-26T08:46:35.112365+00:00
+Lauf gestartet 2026-11-27T08:46:21.625032+00:00
 Netzgeometrie: aktuell (jünger als eine Woche), übersprungen
 Ortsindex: 14593 Namen
 JAO laden …
-  JAO 2026-11-19: 271 Viertelstunden-Einträge, 22 bindende Engpässe, 11 mit Kartenposition
   JAO 2026-11-20: 266 Viertelstunden-Einträge, 17 bindende Engpässe, 6 mit Kartenposition
   JAO 2026-11-21: 175 Viertelstunden-Einträge, 17 bindende Engpässe, 9 mit Kartenposition
   JAO 2026-11-22: 272 Viertelstunden-Einträge, 19 bindende Engpässe, 7 mit Kartenposition
   JAO 2026-11-23: 133 Viertelstunden-Einträge, 20 bindende Engpässe, 3 mit Kartenposition
   JAO 2026-11-24: 221 Viertelstunden-Einträge, 31 bindende Engpässe, 14 mit Kartenposition
   JAO 2026-11-25: 365 Viertelstunden-Einträge, 22 bindende Engpässe, 14 mit Kartenposition
+  JAO 2026-11-26: 205 Viertelstunden-Einträge, 17 bindende Engpässe, 10 mit Kartenposition
 Redispatch laden …
-  Redispatch 2026-11-19–2026-11-25: 674 Maßnahmen, Tage mit Daten: ['2026-11-19', '2026-11-20', '2026-11-21', '2026-11-22', '2026-11-23', '2026-11-24', '2026-11-25']
-  gespeichert netze.json: 0.21 MB
+  Redispatch 2026-11-20–2026-11-26: 595 Maßnahmen, Tage mit Daten: ['2026-11-20', '2026-11-21', '2026-11-22', '2026-11-23', '2026-11-24', '2026-11-25', '2026-11-26']
+  gespeichert netze.json: 0.20 MB
 
 == Redispatch: Zuordnung der Anlagen ==
   50H BASF Schwarzheide  ->  BASF Schwarzheide (51.48, 13.87)
@@ -28,18 +28,14 @@ Redispatch laden …
   50H Hamburg Wedel1  ->  Heizkraftwerk Wedel (53.57, 9.72)
   50H InfraLeuna IKW  ->  Kraftwerk Leuna (51.32, 12.02)
   50H Leipzig Nord GuD  ->  Umspannwerk Leipzig C (51.3673, 12.3902)
-  50H Leipzig Süd GuD  ->  Umspannwerk Leipzig C (51.3673, 12.3902)
   50H Neubrandenburg GuD  ->  Umspannwerk Neubrandenburg (53.5701, 13.28)
   50H OWP Arcadis Ost 1  ->  Arcadis Ost 1 (54.8129, 13.6668)
   50H OWP Arkona  ->  Arkona (54.7869, 14.0979)
   50H OWP Baltic Eagle  ->  Baltic Eagle (54.8326, 13.8383)
   50H OWP Wikinger  ->  Wikinger (54.836, 14.0653)
-  50H OWP Windanker  ->  Windanker (54.8949, 14.0204)
   50H PV Witznitz  ->  Umspannwerk Energiepark Witznitz (51.1781, 12.4075)
   50H Rostock Marienehe  ->  Rostock Marienehe Power Plant (54.1278, 12.0838)
-  50H UW Altentreptow  ->  Altentreptow (53.6822, 13.2383)
   50H UW Bertikow  ->  Umspannwerk Bertikow (53.2523, 13.9573)
-  50H UW Iven  ->  Umspannwerk Iven/West (53.7917, 13.3996)
   50H UW Putlitz  ->  Putlitz Süd (380kV) (53.2506, 12.1096)
   50H UW Schönewalde  ->  UW Schönewalde (51.8286, 13.1572)
   50H UW Wessin  ->  Umspannwerk Wessin (53.5721, 11.6985)
@@ -57,26 +53,15 @@ Redispatch laden …
   50H_EDIS_CR_VIE_Sued  ->  Netzgebiet E.DIS (Brandenburg, Mecklenburg-Vorpommern) (53.1, 13.4)
   50H_EDIS_CR_WU_NORD  ->  Netzgebiet E.DIS (Brandenburg, Mecklenburg-Vorpommern) (53.1, 13.4)
   50H_MNS_CR_ADB  ->  Netzgebiet MITNETZ Strom (Sachsen, Sachsen-Anhalt, Süd-Brandenburg) (51.35, 12.6)
-  50H_MNS_CR_CRO  ->  Netzgebiet MITNETZ Strom (Sachsen, Sachsen-Anhalt, Süd-Brandenburg) (51.35, 12.6)
-  50H_MNS_CR_FRN  ->  Netzgebiet MITNETZ Strom (Sachsen, Sachsen-Anhalt, Süd-Brandenburg) (51.35, 12.6)
-  50H_MNS_CR_GRS  ->  Netzgebiet MITNETZ Strom (Sachsen, Sachsen-Anhalt, Süd-Brandenburg) (51.35, 12.6)
-  50H_MNS_CR_HER  ->  Netzgebiet MITNETZ Strom (Sachsen, Sachsen-Anhalt, Süd-Brandenburg) (51.35, 12.6)
   50H_MNS_CR_JSN  ->  Netzgebiet MITNETZ Strom (Sachsen, Sachsen-Anhalt, Süd-Brandenburg) (51.35, 12.6)
   50H_MNS_CR_KLM  ->  Netzgebiet MITNETZ Strom (Sachsen, Sachsen-Anhalt, Süd-Brandenburg) (51.35, 12.6)
   50H_MNS_CR_LAU_Nord  ->  Netzgebiet MITNETZ Strom (Sachsen, Sachsen-Anhalt, Süd-Brandenburg) (51.35, 12.6)
   50H_MNS_CR_LAU_Sued  ->  Netzgebiet MITNETZ Strom (Sachsen, Sachsen-Anhalt, Süd-Brandenburg) (51.35, 12.6)
-  50H_MNS_CR_LV_OST  ->  Netzgebiet MITNETZ Strom (Sachsen, Sachsen-Anhalt, Süd-Brandenburg) (51.35, 12.6)
-  50H_MNS_CR_LV_SUED  ->  Netzgebiet MITNETZ Strom (Sachsen, Sachsen-Anhalt, Süd-Brandenburg) (51.35, 12.6)
-  50H_MNS_CR_LV_WEST1  ->  Netzgebiet MITNETZ Strom (Sachsen, Sachsen-Anhalt, Süd-Brandenburg) (51.35, 12.6)
-  50H_MNS_CR_LV_WEST2  ->  Netzgebiet MITNETZ Strom (Sachsen, Sachsen-Anhalt, Süd-Brandenburg) (51.35, 12.6)
   50H_MNS_CR_MA_Nord  ->  Netzgebiet MITNETZ Strom (Sachsen, Sachsen-Anhalt, Süd-Brandenburg) (51.35, 12.6)
   50H_MNS_CR_MA_Sued  ->  Netzgebiet MITNETZ Strom (Sachsen, Sachsen-Anhalt, Süd-Brandenburg) (51.35, 12.6)
   50H_MNS_CR_PRL  ->  Netzgebiet MITNETZ Strom (Sachsen, Sachsen-Anhalt, Süd-Brandenburg) (51.35, 12.6)
   50H_MNS_CR_PUL  ->  Netzgebiet MITNETZ Strom (Sachsen, Sachsen-Anhalt, Süd-Brandenburg) (51.35, 12.6)
   50H_MNS_CR_RAG  ->  Netzgebiet MITNETZ Strom (Sachsen, Sachsen-Anhalt, Süd-Brandenburg) (51.35, 12.6)
-  50H_MNS_CR_ROE  ->  Netzgebiet MITNETZ Strom (Sachsen, Sachsen-Anhalt, Süd-Brandenburg) (51.35, 12.6)
-  50H_MNS_CR_STR  ->  Netzgebiet MITNETZ Strom (Sachsen, Sachsen-Anhalt, Süd-Brandenburg) (51.35, 12.6)
-  50H_MNS_CR_ZW  ->  Netzgebiet MITNETZ Strom (Sachsen, Sachsen-Anhalt, Süd-Brandenburg) (51.35, 12.6)
   50H_TEN_CR_M1_EI  ->  Netzgebiet TEN (Thüringen) (50.9, 11.0)
   50H_TEN_CR_M2_VIB  ->  Netzgebiet TEN (Thüringen) (50.9, 11.0)
   50H_TEN_CR_S1_ATF  ->  Netzgebiet TEN (Thüringen) (50.9, 11.0)
@@ -88,8 +73,7 @@ Redispatch laden …
   AMP_WESTNETZ_NIKE_CR_SONSTIGE_EE  ->  — kein Ort —
   AMP_WESTNETZ_NIKE_CR_WIND  ->  — kein Ort —
   AMP_WESTNETZ_SAUERLAND_CR_WIND  ->  Netzgebiet Westnetz Sauerland (51.25, 8.2)
-  AVA Cluster Helmstedt  ->  Umspannwerk Helmstedt (52.1999, 10.998)
-  AVA Cluster Lehrte  ->  Umspannwerk Lehrte West (52.3812, 9.9508)
+  AVA Cluster Emden Ost  ->  Kraftwerk Emden (53.3412, 7.2059)
   AVA Cluster Voslapp  ->  Voslapp (53.6057, 8.0861)
   Boxberg (Standort)  ->  Kraftwerk Boxberg (51.4197, 14.5649)
   Börse  ->  — kein Ort —
@@ -127,6 +111,7 @@ Redispatch laden …
   KMW_KW5  ->  Kraftwerke Mainz-Wiesbaden (50.02, 8.25)
   KNAPSACK_20  ->  Station Knapsack (50.8637, 6.8426)
   Kiel (Küstenkraftwerk gesamt)  ->  Küstenkraftwerk K.I.E.L. (54.3412, 10.1792)
+  Kirchlengern GT 1 (KapRes)  ->  Kraftwerk Kirchlengern (52.1943, 8.6498)
   Knapsack 1  ->  Station Knapsack (50.8637, 6.8426)
   Kraftwerk Walheim GT D  ->  Kraftwerk Walheim (49.0195, 9.1554)
   Kühtai 1 M1 (Uniper)  ->  Kühtai (Tirol) (47.21, 11.02)
@@ -151,7 +136,6 @@ Redispatch laden …
   ReserveKW Staudinger 5  ->  Kraftwerk Staudinger (50.0881, 8.9479)
   ReserveKW Zolling 5  ->  Kraftwerk Zolling (48.4549, 11.8022)
   Reservekraftwerk Altbach/Deizisau Block 1  ->  Heizkraftwerk Altbach/Deizisau (48.7186, 9.372)
-  Reservekraftwerk Heilbronn Block 5  ->  Heizkraftwerk Heilbronn (49.1751, 9.2071)
   Reservekraftwerk Heilbronn Block 7  ->  Heizkraftwerk Heilbronn (49.1751, 9.2071)
   Reservekraftwerk Rheinhafen-Dampfkraftwerk Karlsruhe Block 4  ->  Rheinhafen-Dampfkraftwerk (49.013, 8.3065)
   Robert Frank 4 GT (KapRes)  ->  Kraftwerk Robert Frank (52.5472, 9.1138)
@@ -167,16 +151,14 @@ Redispatch laden …
   UW Diele  ->  Diele (53.1258, 7.3107)
   UW Dörpen-West  ->  Dörpen (52.9806, 7.3652)
   UW Emden-Ost  ->  Kraftwerk Emden (53.3412, 7.2059)
-  UW Garrel-Ost alpha  ->  Garrel (52.9642, 8.0272)
   WALSUM_10  ->  Umspannwerk Walsum (51.5262, 6.7109)
-  WEISWEILERVGT_H3  ->  Kraftwerk Weisweiler (50.84, 6.32)
   WEISWEILER_G  ->  Kraftwerk Weisweiler (50.8365, 6.321)
   WEISWEILER_H  ->  Kraftwerk Weisweiler (50.8365, 6.321)
   Wilhelmshaven  ->  Umspannwerk Kraftwerk Wilhelmshaven (53.5635, 8.1477)
   Würzburg GT 1  ->  — kein Ort —
   illwerke vkw AG  ->  Illwerke (Montafon, Vorarlberg) (47.07, 9.93)
 == Redispatch: ohne Ort (MWh im Zeitraum) ==
-     15593  STUMMHAFEN_10
+     16620  STUMMHAFEN_10
       2342  AMP_WESTNETZ_NIKE_CR_WIND
       1972  GERSTEINW_F (KapRes)
        727  GERSTEINW_G (KapRes)
@@ -195,27 +177,23 @@ Redispatch laden …
   Pehlin - Divaca   (gelesen als ['Pehlin', 'Divaca'])
   Resita - Timisoara c1   (gelesen als ['Resita', 'Timisoara'])
   Szabolcsbaka - Zahidno Ukrainska   (gelesen als ['Szabolcsbaka', 'Zahidno Ukrainska'])
+  V.Dur - Levice 1   (gelesen als ['Dur', 'Levice'])
 == JAO: Zuordnung ==
-  Mikulowa PST1  ->  []
-  Doel - Zandvliet 380.25  ->  ['Doel 380', 'Zandvliet']
-  Paroseni - Targu Jiu Nord  ->  []
-  Mecklar - Eisenach 450  ->  ['Umspannwerk Mecklar 380kV', 'Umspannwerk Eisenach']
   Altheim - Sittling 219  ->  ['Umspannwerk Altheim', 'Umspannwerk Sittling']
-  Doel - Zandvliet 380.25  ->  ['Doel 380', 'Zandvliet']
+  Mikulowa PST1  ->  []
   Mecklar - Eisenach 450  ->  ['Umspannwerk Mecklar 380kV', 'Umspannwerk Eisenach']
-  Y-Altheim (-Simbach - St. Peter) 234/230  ->  ['Umspannwerk Altheim']
-  Maasbracht - Oberzier 380 white  ->  ['380 kV Maasbracht', 'Station Oberzier']
   Altheim - Sittling 220  ->  ['Umspannwerk Altheim', 'Umspannwerk Sittling']
+  Ensdorf - Vigy VIGY2 S  ->  ['Umspannanlage Ensdorf', 'Poste électrique de Vigy']
+  Rilland - Zandvliet 380 Grey/29  ->  ['380 kV Rilland', 'Zandvliet']
+  L 400kV N0 2 CREYS-ST-VULBAS-OUEST  ->  ['Poste électrique de Creys-Malville']
+  Ensdorf - Vigy VIGY1 N  ->  ['Umspannanlage Ensdorf', 'Poste électrique de Vigy']
   Maasbracht - Oberzier 380 white  ->  ['380 kV Maasbracht', 'Station Oberzier']
   L 400kV N0 1 CREYS-ST-VULBAS-OUEST  ->  ['Poste électrique de Creys-Malville']
   External Constraint PL_SE4_SwePol_export  ->  []
-  L 400kV N0 2 CREYS-ST-VULBAS-OUEST  ->  ['Poste électrique de Creys-Malville']
-  PST Gronau TR 441 E  ->  ['Station Gronau']
-  Isaccea - Vulcanesti  ->  []
-  External Constraint PL_LT_BigHub_export  ->  []
-  External Constraint NL_DK1_COBRA_import  ->  []
-  Maasbracht - Siersdorf 380 black  ->  ['380 kV Maasbracht', 'Siersdorf']
+  Nosovice - Varin  ->  []
   External Constraint DE_AL_export  ->  []
-  PST Gronau TR 441 E  ->  ['Station Gronau']
   External Constraint BE_AL_import  ->  []
+  External Constraint NL_DK1_COBRA_import  ->  []
+  PST Vierraden 441  ->  ['Umspannwerk Vierraden']
+  V.Dur - Levice 1  ->  []
 Fertig in 51 s
