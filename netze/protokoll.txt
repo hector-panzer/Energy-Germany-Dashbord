@@ -1,17 +1,17 @@
-Lauf gestartet 2026-11-27T08:46:21.625032+00:00
+Lauf gestartet 2026-11-28T08:29:59.579306+00:00
 Netzgeometrie: aktuell (jünger als eine Woche), übersprungen
 Ortsindex: 14593 Namen
 JAO laden …
-  JAO 2026-11-20: 266 Viertelstunden-Einträge, 17 bindende Engpässe, 6 mit Kartenposition
   JAO 2026-11-21: 175 Viertelstunden-Einträge, 17 bindende Engpässe, 9 mit Kartenposition
   JAO 2026-11-22: 272 Viertelstunden-Einträge, 19 bindende Engpässe, 7 mit Kartenposition
   JAO 2026-11-23: 133 Viertelstunden-Einträge, 20 bindende Engpässe, 3 mit Kartenposition
   JAO 2026-11-24: 221 Viertelstunden-Einträge, 31 bindende Engpässe, 14 mit Kartenposition
   JAO 2026-11-25: 365 Viertelstunden-Einträge, 22 bindende Engpässe, 14 mit Kartenposition
   JAO 2026-11-26: 205 Viertelstunden-Einträge, 17 bindende Engpässe, 10 mit Kartenposition
+  JAO 2026-11-27: 153 Viertelstunden-Einträge, 14 bindende Engpässe, 10 mit Kartenposition
 Redispatch laden …
-  Redispatch 2026-11-20–2026-11-26: 595 Maßnahmen, Tage mit Daten: ['2026-11-20', '2026-11-21', '2026-11-22', '2026-11-23', '2026-11-24', '2026-11-25', '2026-11-26']
-  gespeichert netze.json: 0.20 MB
+  Redispatch 2026-11-21–2026-11-27: 530 Maßnahmen, Tage mit Daten: ['2026-11-21', '2026-11-22', '2026-11-23', '2026-11-24', '2026-11-25', '2026-11-26', '2026-11-27']
+  gespeichert netze.json: 0.19 MB
 
 == Redispatch: Zuordnung der Anlagen ==
   50H BASF Schwarzheide  ->  BASF Schwarzheide (51.48, 13.87)
@@ -81,11 +81,12 @@ Redispatch laden …
   Datteln_4  ->  Kraftwerk Datteln IV (51.6315, 7.3404)
   Eltmann  ->  Heizkraftwerk Eltmann (49.9838, 10.6512)
   Emden 4 GT (KapRes)  ->  Kraftwerk Emden (53.3412, 7.2059)
-  Emsland Block B  ->  Erdgaskraftwerk Emsland (52.4829, 7.3035)
   Emsland Block C  ->  Erdgaskraftwerk Emsland (52.4829, 7.3035)
   Emsland Block D  ->  Erdgaskraftwerk Emsland (52.4829, 7.3035)
   Erzhausen 1  ->  Erzhausen (51.8975, 9.9237)
-  Frankfurt West 4  ->  Heizkraftwerk Frankfurt West (50.1, 8.64)
+  Erzhausen 2  ->  Erzhausen (51.8975, 9.9237)
+  Erzhausen 3  ->  Erzhausen (51.8975, 9.9237)
+  Erzhausen 4  ->  Erzhausen (51.8975, 9.9237)
   GERSTEINW_F (KapRes)  ->  — kein Ort —
   GERSTEINW_G (KapRes)  ->  — kein Ort —
   GUD_HERNE_6  ->  Heizkraftwerk Herne (51.5503, 7.1873)
@@ -93,14 +94,11 @@ Redispatch laden …
   Gebersdorf 2  ->  Heizkraftwerk Nürnberg-Gebersdorf (49.43, 11.01)
   Gebersdorf GT  ->  Heizkraftwerk Nürnberg-Gebersdorf (49.43, 11.01)
   Grosskraftwerk Mannheim Block 6  ->  Großkraftwerk Mannheim (49.4437, 8.4974)
-  Grosskraftwerk Mannheim Block 7  ->  Großkraftwerk Mannheim (49.4437, 8.4974)
   HAMMUENTROP_10  ->  Kraftwerke Hamm-Uentrop (51.68, 7.97)
   HAMMUENTROP_20  ->  Kraftwerke Hamm-Uentrop (51.68, 7.97)
   HERDECKE_H6  ->  Herdecke (51.4025, 7.411)
   HKW Aalen  ->  — kein Ort —
   HUCKINGEN_A  ->  Kraftwerk Huckingen (51.3756, 6.7233)
-  Hannover (GKH) 2  ->  Gemeinschaftskraftwerk Hannover (Stöcken) (52.41, 9.66)
-  Hannover-Linden GuD  ->  Heizkraftwerk Hannover-Linden (52.36, 9.71)
   Heizkraftwerk Altbach/Deizisau GT C  ->  Heizkraftwerk Altbach/Deizisau (48.7186, 9.372)
   Heizkraftwerk Altbach/Deizisau GT E  ->  Heizkraftwerk Altbach/Deizisau (48.7186, 9.372)
   Heizkraftwerk_Pforzheim  ->  Heizkraftwerk Pforzheim (48.8974, 8.7248)
@@ -155,16 +153,16 @@ Redispatch laden …
   WEISWEILER_G  ->  Kraftwerk Weisweiler (50.8365, 6.321)
   WEISWEILER_H  ->  Kraftwerk Weisweiler (50.8365, 6.321)
   Wilhelmshaven  ->  Umspannwerk Kraftwerk Wilhelmshaven (53.5635, 8.1477)
-  Würzburg GT 1  ->  — kein Ort —
+  Würzburg GT 2  ->  — kein Ort —
   illwerke vkw AG  ->  Illwerke (Montafon, Vorarlberg) (47.07, 9.93)
 == Redispatch: ohne Ort (MWh im Zeitraum) ==
-     16620  STUMMHAFEN_10
+     16053  STUMMHAFEN_10
       2342  AMP_WESTNETZ_NIKE_CR_WIND
       1972  GERSTEINW_F (KapRes)
        727  GERSTEINW_G (KapRes)
         85  AMP_WESTNETZ_NIKE_CR_SONSTIGE_EE
-        60  Würzburg GT 1
         42  HKW Aalen
+        24  Würzburg GT 2
 == JAO: Engpässe ohne Kartenposition ==
   Arad - Timisoara   (gelesen als ['Arad', 'Timisoara'])
   Etzersdorf - Kronsdorf 434A   (gelesen als ['Etzersdorf', 'Kronsdorf'])
@@ -176,24 +174,20 @@ Redispatch laden …
   Paroseni - Targu Jiu Nord   (gelesen als ['Paroseni', 'Targu Jiu'])
   Pehlin - Divaca   (gelesen als ['Pehlin', 'Divaca'])
   Resita - Timisoara c1   (gelesen als ['Resita', 'Timisoara'])
-  Szabolcsbaka - Zahidno Ukrainska   (gelesen als ['Szabolcsbaka', 'Zahidno Ukrainska'])
   V.Dur - Levice 1   (gelesen als ['Dur', 'Levice'])
 == JAO: Zuordnung ==
-  Altheim - Sittling 219  ->  ['Umspannwerk Altheim', 'Umspannwerk Sittling']
   Mikulowa PST1  ->  []
-  Mecklar - Eisenach 450  ->  ['Umspannwerk Mecklar 380kV', 'Umspannwerk Eisenach']
-  Altheim - Sittling 220  ->  ['Umspannwerk Altheim', 'Umspannwerk Sittling']
-  Ensdorf - Vigy VIGY2 S  ->  ['Umspannanlage Ensdorf', 'Poste électrique de Vigy']
-  Rilland - Zandvliet 380 Grey/29  ->  ['380 kV Rilland', 'Zandvliet']
-  L 400kV N0 2 CREYS-ST-VULBAS-OUEST  ->  ['Poste électrique de Creys-Malville']
-  Ensdorf - Vigy VIGY1 N  ->  ['Umspannanlage Ensdorf', 'Poste électrique de Vigy']
   Maasbracht - Oberzier 380 white  ->  ['380 kV Maasbracht', 'Station Oberzier']
-  L 400kV N0 1 CREYS-ST-VULBAS-OUEST  ->  ['Poste électrique de Creys-Malville']
-  External Constraint PL_SE4_SwePol_export  ->  []
-  Nosovice - Varin  ->  []
-  External Constraint DE_AL_export  ->  []
-  External Constraint BE_AL_import  ->  []
-  External Constraint NL_DK1_COBRA_import  ->  []
   PST Vierraden 441  ->  ['Umspannwerk Vierraden']
-  V.Dur - Levice 1  ->  []
-Fertig in 51 s
+  External Constraint DE_AL_export  ->  []
+  Ensdorf - Vigy VIGY2 S  ->  ['Umspannanlage Ensdorf', 'Poste électrique de Vigy']
+  Altheim - Sittling 219  ->  ['Umspannwerk Altheim', 'Umspannwerk Sittling']
+  Ensdorf - Vigy VIGY1 N  ->  ['Umspannanlage Ensdorf', 'Poste électrique de Vigy']
+  External Constraint BE_AL_import  ->  []
+  PST Oberzier TR 442 E  ->  ['Station Oberzier']
+  Oberzier - Oberzier TR 441 E  ->  ['Station Oberzier']
+  Paroseni - Targu Jiu Nord  ->  []
+  Krimpen a/d IJssel - Geertruidenberg 380 Wit  ->  ['380 kV Krimpen a/d IJssel', '380 kV Geertruidenberg']
+  Brunsbuettel - Buettel BUTL GN  ->  ['Umspannwerk Brunsbüttel (TenneT)', 'Umspannwerk Büttel']
+  Diele - Meeden SCHWARZ  ->  ['Diele', '380 kV Meeden']
+Fertig in 40 s
